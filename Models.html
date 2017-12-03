@@ -48,7 +48,7 @@
       <h1>Infinite Improbability Intergalactic Inc</h1>
       <h4>Let all your space dreams come true</h4>
 
-      <button><a href="index.html">Home</a></button>
+      <button><a href="Index.html">Home</a></button>
       <hr/>
 
 			<h2><u>Department Models</u></h2>
@@ -61,6 +61,7 @@
 						<form action="insert.jsp" method="post" onsubmit="return validateInsert()" id="insertForm">
 							<div class="data">
 							<input type="hidden" name="table" value="DepartmentModel">
+							ID Number: <input type="number" min="0" name="id" id="insertId"><br/>
 						  Department Name: <input type="text" name="dept" id="insertDept"><br/>
 							Model Name: <input type="text" name="model" id="insertModel"><br/>
 							Cost: <input type="number" name="cost" id="insertCost"><br/>
@@ -164,7 +165,9 @@ function validateInsert(){
 		if (document.getElementById("insertDept").value != ""){
 			if (document.getElementById("insertModel").value != ""){
 				if (document.getElementById("insertCost").value != ""){
-					return true;
+					if (document.getElementById("insertID").value > "0"){
+						return true;
+					}
 				}
 			}
 		}
