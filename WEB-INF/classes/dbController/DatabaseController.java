@@ -38,10 +38,10 @@ public class DatabaseController {
 
   public DatabaseController() {
     // your cs login name
-    username = "yawenchen"; 
+    username = "calebmgshort";
     // your Oracle password, NNNN is the last four digits of your CSID
-    password = "x1234";
-    connect_string_ = "jdbc:oracle:thin:@aloe.cs.arizona.edu:1521:oracle";
+    password = "Cmg21514007!";
+    connect_string_ = "jdbc:oracle:thin:@aloe.cs.arizona.edu:5243:oracle";
   }
 
 
@@ -74,22 +74,48 @@ public class DatabaseController {
     }
   }
 
-    public void Open() {
-	try {
-	    Class.forName("oracle.jdbc.OracleDriver");
-	    connection_ = DriverManager.getConnection(connect_string_, username, password);
-	    statement_ = connection_.createStatement();
-	    return;
-	} catch (SQLException sqlex) {
-	    sqlex.printStackTrace();
-	} catch (ClassNotFoundException e) {
-	    e.printStackTrace();
-	    System.exit(1); //programemer/dbsm error
-	} catch (Exception ex) {
-	    ex.printStackTrace();
-	    System.exit(2);
-	}
-    }
+  public void Open() {
+	    try {
+	        Class.forName("oracle.jdbc.OracleDriver");
+	        connection_ = DriverManager.getConnection(connect_string_, username, password);
+          connection_.setAutoCommit(false);
+	        statement_ = connection_.createStatement();
+	        return;
+	    } catch (SQLException sqlex) {
+	        sqlex.printStackTrace();
+	    } catch (ClassNotFoundException e) {
+	        e.printStackTrace();
+	        System.exit(1); //programemer/dbsm error
+	    } catch (Exception ex) {
+	       ex.printStackTrace();
+	       System.exit(2);
+	    }
+  }
+
+
+  public String insertModel(int modelNum, String deptName, String modelName, float cost, int[] luxuryParts) {
+
+      // TODO: Make sure that the provided number of luxury parts is between 3 and 10
+      //String queryStatement =
+
+      try{
+          String updateStatement = "INSERT INTO hdcovello.DepartmentModel "
+          + "values (modelNum,modelname,modelcost,deptname) "
+          + "(" + modelName + "," + cost + "," + deptName + ")";
+          statement_.executeUpdate(updateStatement);
+          for(int i = 0; i < luxuryParts.length; i++){
+              updateStatement = "INSERT INTO hdcovello.LuxuryPartOfModel "
+              + "values (modelNum,partNum) "
+              + "(" + modelNum + "," + modelName + ")";
+              statement_.executeUpdate(updateStatement);
+          }
+      }  catch (SQLException e){
+          return e.toString();
+          // TODO: handle if there is an error
+      }
+      Commit();
+      return "success";
+  }
 
 
   public Vector<String> FindAllProducts() {
