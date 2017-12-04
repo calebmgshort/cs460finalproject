@@ -7,6 +7,7 @@ import java.sql.Statement;
 
 import java.sql.ResultSet;
 import java.util.*;
+import java.util.AbstractMap.SimpleEntry;
 
 /**
  * Servlet implementation class for Servlet: DatabaseController
@@ -41,7 +42,7 @@ public class DatabaseController {
     username = "calebmgshort";
     // your Oracle password, NNNN is the last four digits of your CSID
     password = "Cmg21514007!";
-    connect_string_ = "jdbc:oracle:thin:@aloe.cs.arizona.edu:5243:oracle";
+    connect_string_ = "jdbc:oracle:thin:@aloe.cs.arizona.edu:1521:oracle";
   }
 
 
@@ -78,7 +79,7 @@ public class DatabaseController {
 	    try {
 	        Class.forName("oracle.jdbc.OracleDriver");
 	        connection_ = DriverManager.getConnection(connect_string_, username, password);
-          connection_.setAutoCommit(false);
+          	connection_.setAutoCommit(false);
 	        statement_ = connection_.createStatement();
 	        return "success";
 	    } catch (SQLException sqlex) {
@@ -93,48 +94,32 @@ public class DatabaseController {
   }
 
 
-  public String insertModel(int modelNum, String deptName, String modelName, float cost, int[] luxuryParts) {
-
-      // Make sure that the provided number of luxury parts is between 3 and 10
-      if(luxuryParts.length < 3 || luxuryParts.length > 10){
-          return "The number of luxury parts for a given ship must be between 3 and 10";
-      }
-      //String queryStatement =
-
-      try{
-          String updateStatement = "INSERT INTO hdcovello.DepartmentModel "
-          + "values (modelNum,modelname,modelcost,deptname) "
-          + "(" + modelName + "," + cost + "," + deptName + ")";
+  public String insertModel(int modelNum, String deptName, String modelName, float cost, int[] luxuryParts) throws SQLException{
+      String updateStatement = "INSERT INTO hdcovello.DepartmentModel (modelNum,modelname,modelcost,deptname) "
+    		  + "values (" + modelNum + ",'" + modelName + "'," + cost + ",'" + deptName + "')";
+      statement_.executeUpdate(updateStatement);
+	  for(int i = 0; i < luxuryParts.length; i++){
+          updateStatement = "INSERT INTO hdcovello.LuxuryPartOfModel (modelNum,partNum, qty) "
+          + "values (" + modelNum + "," + luxuryParts[i] + ",1)";
           statement_.executeUpdate(updateStatement);
-          for(int i = 0; i < luxuryParts.length; i++){
-              updateStatement = "INSERT INTO hdcovello.LuxuryPartOfModel "
-              + "values (modelNum,partNum) "
-              + "(" + modelNum + "," + modelName + ")";
-              statement_.executeUpdate(updateStatement);
-          }
-      }  catch (SQLException e){
-          return e.toString();
-          // TODO: handle if there is an error
       }
       Commit();
       return "success";
   }
 
-
-  public Vector<String> FindAllProducts() {
-    String sql_query = "SELECT * FROM yawenchen.products order by barcode";
-    try {
-      ResultSet rs  = statement_.executeQuery(sql_query);
-      Vector<String> result_employees = new Vector<String>();
-      while (rs.next()) {
-         String temp_record = rs.getString("BARCODE") + "##" + rs.getString("NAME") +
-             "##" + rs.getDouble("PRICE") + "##" + rs.getInt("QUANTITY");
-        result_employees.add(temp_record);
+  public List<Pair<Integer, String>> getModels() throws SQLException{
+      String queryStatement = "SELECT (modelnum, modelname) "
+    		  + "FROM hdcovello.DepartmentModel";
+      ResultSet answer = statement_.executeQuery(queryStatement);
+      List<Pair<Integer, String>> result = new ArrayList<AbstractMap.SimpleEntry<Integer, String>>();
+      while(answer.next()){
+    	  int num = answer.getInt("modelnum");
+    	  String name = answer.getString("modelname");
+    	  result.add(new Pair<Integer,String>(new Integer(num), name));
       }
-      return result_employees;
-    } catch (SQLException sqlex) {
-      sqlex.printStackTrace();
-    }
-    return null;
+      return result;
   }
+
+
+
 }
