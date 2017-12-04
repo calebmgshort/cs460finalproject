@@ -74,28 +74,31 @@ public class DatabaseController {
     }
   }
 
-  public void Open() {
+  public String Open() {
 	    try {
 	        Class.forName("oracle.jdbc.OracleDriver");
 	        connection_ = DriverManager.getConnection(connect_string_, username, password);
           connection_.setAutoCommit(false);
 	        statement_ = connection_.createStatement();
-	        return;
+	        return "success";
 	    } catch (SQLException sqlex) {
-	        sqlex.printStackTrace();
+	        return sqlex.printStackTrace();
 	    } catch (ClassNotFoundException e) {
-	        e.printStackTrace();
-	        System.exit(1); //programemer/dbsm error
+	        return e.printStackTrace();
+	        //System.exit(1); //programemer/dbsm error
 	    } catch (Exception ex) {
-	       ex.printStackTrace();
-	       System.exit(2);
+	       return ex.printStackTrace();
+	       //System.exit(2);
 	    }
   }
 
 
   public String insertModel(int modelNum, String deptName, String modelName, float cost, int[] luxuryParts) {
 
-      // TODO: Make sure that the provided number of luxury parts is between 3 and 10
+      // Make sure that the provided number of luxury parts is between 3 and 10
+      if(luxuryParts.length < 3 || luxuryParts.length > 10){
+          return "The number of luxury parts for a given ship must be between 3 and 10";
+      }
       //String queryStatement =
 
       try{
