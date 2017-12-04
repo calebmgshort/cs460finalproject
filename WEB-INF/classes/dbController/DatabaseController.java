@@ -107,34 +107,19 @@ public class DatabaseController {
       return "success";
   }
 
-  public List<AbstractMap.SimpleEntry<Integer, String>> getModels() throws SQLException{
+  public List<Pair<Integer, String>> getModels() throws SQLException{
       String queryStatement = "SELECT (modelnum, modelname) "
     		  + "FROM hdcovello.DepartmentModel";
       ResultSet answer = statement_.executeQuery(queryStatement);
-      List<AbstractMap.SimpleEntry<Integer, String>> result = new ArrayList<AbstractMap.SimpleEntry<Integer, String>>();
+      List<Pair<Integer, String>> result = new ArrayList<AbstractMap.SimpleEntry<Integer, String>>();
       while(answer.next()){
     	  int num = answer.getInt("modelnum");
     	  String name = answer.getString("modelname");
-    	  result.add(new AbstractMap.SimpleEntry<Integer,String>(new Integer(num), name));
+    	  result.add(new Pair<Integer,String>(new Integer(num), name));
       }
       return result;
   }
 
 
-  public Vector<String> FindAllProducts() {
-    String sql_query = "SELECT * FROM yawenchen.products order by barcode";
-    try {
-      ResultSet rs  = statement_.executeQuery(sql_query);
-      Vector<String> result_employees = new Vector<String>();
-      while (rs.next()) {
-         String temp_record = rs.getString("BARCODE") + "##" + rs.getString("NAME") +
-             "##" + rs.getDouble("PRICE") + "##" + rs.getInt("QUANTITY");
-        result_employees.add(temp_record);
-      }
-      return result_employees;
-    } catch (SQLException sqlex) {
-      sqlex.printStackTrace();
-    }
-    return null;
-  }
+
 }
