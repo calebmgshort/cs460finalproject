@@ -109,7 +109,7 @@ public class DatabaseController {
   }
 
   public List<Pair<Integer, String>> getModels() throws SQLException{
-      String queryStatement = "SELECT (modelnum, modelname) "
+      String queryStatement = "SELECT modelnum, modelname "
     		  + "FROM hdcovello.DepartmentModel";
       ResultSet answer = statement_.executeQuery(queryStatement);
       List<Pair<Integer, String>> result = new ArrayList<Pair<Integer, String>>();

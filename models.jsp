@@ -51,8 +51,6 @@ dbController.DatabaseController
 	<body>
 
 
-
-
   <center>
 
     <div>
@@ -109,9 +107,9 @@ dbController.DatabaseController
 						<%
 							try{
 								DatabaseController controller = new DatabaseController();
-					  		String result = controller.Open();
+					  		controller.Open();
 
-								ArrayList<Pair<Integer, String>> models = controller.getModels();
+								List<Pair<Integer, String>> models = controller.getModels();
 
 								for (Pair<Integer, String> model : models){
 									out.write("<option value="+model.getKey()+">"+model.getValue()+"</option>");
@@ -119,7 +117,7 @@ dbController.DatabaseController
 
 								controller.Close();
 							}
-							catch(SQLException ex){
+							catch(Exception ex){
 
 							}
 						%>
