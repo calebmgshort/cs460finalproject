@@ -194,6 +194,19 @@ public class DatabaseController {
     return result;
   }
 
+  public List<Pair<Integer, String>> getParts() throws SQLException{
+    String queryStatement = "SELECT partnum, partname "
+        + "FROM hdcovello.Part";
+    ResultSet answer = statement_.executeQuery(queryStatement);
+    List<Pair<Integer, String>> result = new ArrayList<Pair<Integer, String>>();
+    while(answer.next()){
+      int num = answer.getInt("partnum");
+      String name = answer.getString("partname");
+      result.add(new Pair<Integer,String>(new Integer(num), name));
+    }
+    return result;
+  }
+
   public List<Integer> getShips() throws SQLException{
     String queryStatement = "SELECT shipNum "
         + "FROM hdcovello.ShipContract";
@@ -250,5 +263,7 @@ public class DatabaseController {
 	  Pair<Integer, Integer> ans = new Pair<Integer, Integer>(new Integer(custNum), new Integer(totalSpent));
 	  return ans;
   }
+
+
 
 }
