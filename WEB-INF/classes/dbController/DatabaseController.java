@@ -118,11 +118,27 @@ public class DatabaseController {
 		  statement_.executeUpdate(updateStatement);
 	  }
 	  Commit();
+  }
 
+  public void insertPart(int partNum, String partName, int price, boolean isRequired) throws SQLException{
+      String updateStatement = "INSERT INTO hdcovello.Part (partnum,partname,price,isrequired) "
+    		  + "VALUES (" + partNum + ",'" + partName + "'," + price + "," + isRequired + ")";
+      statement_.executeUpdate(updateStatement);
+      Commit();
+  }
+
+  public int query1(int modelNum) throws SQLException{
+	  String query1 = "SELECT SUM(price * qty) "  +
+			    "FROM LuxuryPartOfModel JOIN Part using (partNum) " +
+			    "WHERE modelNum = " + modelNum;
+	  ResultSet answer1 = statement_.executeQuery(query1);
+	  String query2 = "SELECT SUM(price) FROM RequiredPart";
+	  ResultSet answer2 = statement_.executeQuery(query2);
+	  return answer1.getInt(1) + answer2.getInt(1);
   }
 
   public List<Pair<Integer, String>> getModels() throws SQLException{
-      String queryStatement = "SELECT modelnum, modelname "
+      String queryStatement = "SELECT (modelnum, modelname) "
     		  + "FROM hdcovello.DepartmentModel";
       ResultSet answer = statement_.executeQuery(queryStatement);
       List<Pair<Integer, String>> result = new ArrayList<Pair<Integer, String>>();
