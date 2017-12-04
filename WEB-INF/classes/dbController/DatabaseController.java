@@ -110,7 +110,7 @@ public class DatabaseController {
 
   public void insertShip(int shipNum, int modelNum, int custNum) throws SQLException{
     // Get the cost associated with the given modelnum
-    String queryStatement = "SELECT modelCost FROM DepartmentModel "
+    String queryStatement = "SELECT modelCost FROM hdcovello.DepartmentModel "
         + "WHERE modelnum=" + modelNum;
     ResultSet answer = statement_.executeQuery(queryStatement);
     answer.next();
@@ -136,9 +136,41 @@ public class DatabaseController {
 	  Commit();
   }
 
+  public void deleteShip(int shipNum) throws SQLException{
+    String updateStatement = "DELETE FROM hdcovello.ShipContract "
+    		  + "WHERE shipnum=" + shipNum;
+    statement_.executeUpdate(updateStatement);
+    Commit();
+  }
+
+  public void updateShip(int shipNum, int partNum){
+    /*
+    String queryStatement = "SELECT modelCost FROM DepartmentModel "
+        + "WHERE modelnum=" + modelNum;
+    ResultSet answer = statement_.executeQuery(queryStatement);
+    answer.next();
+    int cost = answer.getInt(1);
+
+
+    String updateStatement = "UPDATE hdcovello.ShipContract "
+          + "SET afterMarkupCost = afterMarkupCost + " +
+    		  + "WHERE shipnum=" + shipNum;
+    statement_.executeUpdate(updateStatement);
+    Commit();
+    */
+  }
+
   public void insertPart(int partNum, String partName, int price, int isRequired) throws SQLException{
     String updateStatement = "INSERT INTO hdcovello.Part (partnum,partname,price,isrequired) "
     		  + "VALUES (" + partNum + ",'" + partName + "'," + price + "," + isRequired + ")";
+    statement_.executeUpdate(updateStatement);
+    Commit();
+  }
+
+  public void updatePart(int partNum, int newPrice) throws SQLException{
+    String updateStatement = "UPDATE hdcovello.Part "
+    		  + "SET newprice = " + newPrice
+          + " WHERE partnum = " + partNum;
     statement_.executeUpdate(updateStatement);
     Commit();
   }
