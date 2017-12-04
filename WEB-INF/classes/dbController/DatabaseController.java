@@ -168,7 +168,7 @@ public class DatabaseController {
       return result;
   }
 
-  public Pair<Integer, Integer> query3(){
+  public Pair<Integer, Integer> query3() throws SQLException{
 	  String query = "select custNum, totalSpent from ( " +
 				"select custNum, sum(modelCost) as totalSpent from hdcovello.Customer " +
 				"join hdcovello.ShipContract using (custNum) " +
@@ -180,8 +180,8 @@ public class DatabaseController {
 	  answer.next();
 	  int custNum = answer.getInt("custNum");
 	  int totalSpent = answer.getInt("totalSpent");
-	  Pair<Integer, Integer> answer = new Pair<Integer, Integer>(new Integer(custNum), new Integer(totalSpent));
-	  return answer;
+	  Pair<Integer, Integer> ans = new Pair<Integer, Integer>(new Integer(custNum), new Integer(totalSpent));
+	  return ans;
   }
 
 }
