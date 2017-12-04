@@ -35,15 +35,19 @@
   		// connect to backend database server via the databasecontroller, which
   		// is a wrapper class providing necessary methods for this particular
   		// application
-  		//dbcontroller.Open();
+  		dbcontroller.Open();
 
       String table = request.getParameter("table");
 
       if (table.equals("DepartmentModel")){
           String id = request.getParameter("id");
+          int idNum = Integer.parseInt(id);
+
           String dept = request.getParameter("dept");
           String model = request.getParameter("model");
           String cost = request.getParameter("cost");
+          float costNum = (float)Integer.parseInt(cost);
+
           String[] parts = request.getParameterValues("parts");
           int[] partNums = new int[parts.length];
 
@@ -60,7 +64,13 @@
           for (int x : partNums){
             out.write(""+x);
           }
+
+          String result = dbController.insertModel(idNum, dept, model, costNum, partNums);
+
+          out.write(result);
       }
+
+
 
   		// writing the content on output/response page
   		out.write("<h1 style=\"color: #4CAF50;\">All Products</h1>");
@@ -68,7 +78,7 @@
 
 
   		// close the dbcontroller and relase all resources occupied by it.
-  		//dbcontroller.Close();
+  		dbcontroller.Close();
 	%>
 	</div>
 
