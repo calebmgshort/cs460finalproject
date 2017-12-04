@@ -53,7 +53,6 @@
 
             out.write("<p>Total cost of parts for model : "+totalCost+"</p>");
             }
-          }
           catch(Exception ex){
             out.write("<p>"+"Ahh! SOrry this no work. =/"+"</p>");
             out.write("<p>"+ex.toString()+"</p>");
