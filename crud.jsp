@@ -96,6 +96,51 @@
             //out.write("<p>"+ex.StackTrace)
           }
       }
+      else if (table.equals("Part")){
+        String id = request.getParameter("id");
+        int idNum = Integer.parseInt(id);
+
+        String name = request.getParameter("name");
+        String price = request.getParameter("price");
+        String quantity = request.getParameter("quantity");
+        String required = request.getParameter("required");
+
+        float priceNum = (float)Integer.parseInt(price);
+        int quantityNum = Integer.parseInt(quantity);
+
+        try{
+          boolean isDelete = false;
+          if(operation.equals("insert")){
+            controller.insertPart(idNum, name, price, required, quantity);
+            out.write("<p>Inserted new part:</p>");
+          }
+          else if(operation.equals("update")){
+
+            out.write("<p>Updated values:</p>");
+          }
+          else if(operation.equals("delete")){
+
+            out.write("<p>Deleted Part "+idNum+"</p>");
+            isDelete = true;
+          }
+          if(!isDelete){
+            out.write("<p>ID Number: "+idNum+"</p>");
+            out.write("<p>Part Name: "+name+"</p>");
+            out.write("<p>Price: "+price+"</p>");
+            out.write("<p>Quantity in stock: "+quantity+"</p>");
+            out.write("<p>Required?: "+required+"</p>");
+          }
+        }
+        catch(Exception ex){
+          out.write("<p>"+"Ahh! SOrry this no work. =/"+"</p>");
+          out.write("<p>"+ex.toString()+"</p>");
+          out.write("<p>"+"</p>");
+          //out.write("<p>"+ex.StackTrace)
+        }
+      }
+      else if (table.equals("Ship")){
+
+      }
 
 
   		out.write("<hr/>");

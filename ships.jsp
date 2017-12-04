@@ -9,7 +9,7 @@ dbController.DatabaseController
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>Models</title>
+		<title>Ships</title>
 
 		<style>
 			button {
@@ -60,38 +60,39 @@ dbController.DatabaseController
       <button><a href="index.html">Home</a></button>
       <hr/>
 
-			<h2><u>Department Models</u></h2>
+			<h2><u>Parts</u></h2>
 
 			<div class="row">
 				<div class="column">
-					<h3>Insert</h3>
-
+					<h3>Order Ship</h3>
 
 						<form action="crud.jsp" method="post" onsubmit="return validateInsert()" id="insertForm">
 							<div class="data">
 							<input type="hidden" name="operation" value="insert">
-							<input type="hidden" name="table" value="DepartmentModel">
+							<input type="hidden" name="table" value="Ship">
 							ID Number: <input type="number" min="0" name="id" id="insertId"><br/>
-						  Department Name: <input type="text" name="dept" id="insertDept"><br/>
-							Model Name: <input type="text" name="model" id="insertModel"><br/>
-							Cost: <input type="number" name="cost" id="insertCost"><br/>
+						  First Name: <input type="text" name="firstName" id="insertFirstName"><br/>
+							Last Name: <input type="text" name="lastName" id="insertLastName"><br/>
 
-							<h3>
-							<select name="parts" multiple id="insertParts" form="insertForm">
-								<option value="9">fuzzy rearview mirror dice</option>
-  						  <option value="10">infinite improbability drive</option>
-  						  <option value="11">cosmic catalytic converter</option>
-  							<option value="12">wine bar</option>
-								<option value="13">eternal Christmas decor</option>
-  							<option value="14">faux fireplace with mantle</option>
-								<option value="15">teleporter</option>
-  							<option value="16">snow machine</option>
-								<option value="17">washing machine and dryer</option>
-  							<option value="18">grand piano</option>
-								<option value="19">petting zoo</option>
-  							<option value="20">helicopter blades</option>
-								<option value="21">greenhouse garden</option>
-  							<option value="22">laser cannon</option>
+							<select name="modelNum" id="insertModelNum" form="insertForm">
+							  <option selected disabled>Select part to update</option>
+								<%
+									try{
+										DatabaseController controller = new DatabaseController();
+							  		controller.Open();
+
+										List<Pair<Integer, String>> models = controller.getModels();
+
+										for (Pair<Integer, String> model : models){
+											out.write("<option value="+model.getKey()+">"+model.getValue()+"</option>");
+										}
+
+										controller.Close();
+									}
+									catch(Exception ex){
+
+									}
+								%>
 							</select>
 
 							</div>
@@ -100,15 +101,15 @@ dbController.DatabaseController
 
 				</div>
 				<div class="column">
-					<h3>Update</h3>
+					<h3>Construct Ship</h3>
 					<select name="id" id="update" onchange="UpdateSelect()" form="updateForm">
-					  <option selected disabled>Select model to update</option>
+					  <option selected disabled>Select ship to work on</option>
 						<%
 							try{
 								DatabaseController controller = new DatabaseController();
 					  		controller.Open();
 
-								List<Pair<Integer, String>> models = controller.getModels();
+								List<Pair<Integer, String>> models = controller.getShips();
 
 								for (Pair<Integer, String> model : models){
 									out.write("<option value="+model.getKey()+">"+model.getValue()+"</option>");
@@ -124,45 +125,28 @@ dbController.DatabaseController
 					<br/><br/>
 					<form action="crud.jsp" method="post" onsubmit="return validateUpdate()" id="updateForm">
 						<input type="hidden" name="operation" value="update">
-						<input type="hidden" name="table" value="DepartmentModel">
+						<input type="hidden" name="table" value="Ship">
 						<div class="data">
-						Department Name: <input type="text" name="dept" id="updateDept"><br/>
-						Model Name: <input type="text" name="model" id="updateModel"><br/>
-						Cost: <input type="number" name="cost" id="updateCost"><br/>
+
+							Price: <input type="text" name="price" id="updatePrice"><br/>
+							Quantity: <input type="number" name="quantity" id="updateQuantity"><br/>
+
 						</div>
-						<br/>
-
-						<select multiple name="parts" multiple id="updateParts" form="updateForm">
-							<option value="9">fuzzy rearview mirror dice</option>
-							<option value="10">infinite improbability drive</option>
-							<option value="11">cosmic catalytic converter</option>
-							<option value="12">wine bar</option>
-							<option value="13">eternal Christmas decor</option>
-							<option value="14">faux fireplace with mantle</option>
-							<option value="15">teleporter</option>
-							<option value="16">snow machine</option>
-							<option value="17">washing machine and dryer</option>
-							<option value="18">grand piano</option>
-							<option value="19">petting zoo</option>
-							<option value="20">helicopter blades</option>
-							<option value="21">greenhouse garden</option>
-							<option value="22">laser cannon</option>
-						</select>
-
 						<br/><br/>
 						<input type="submit" value="Submit" />
 					</form>
 				</div>
+
 				<div class="column">
 					<h3>Delete</h3>
 					<select name="id" id="delete" onchange="deleteSelect()" form="deleteForm">
-					  <option selected disabled>Select model to delete</option>
+					  <option selected disabled>Select ship to scrap</option>
 						<%
 							try{
 								DatabaseController controller = new DatabaseController();
 					  		controller.Open();
 
-								List<Pair<Integer, String>> models = controller.getModels();
+								List<Pair<Integer, String>> models = controller.getShip();
 
 								for (Pair<Integer, String> model : models){
 									out.write("<option value="+model.getKey()+">"+model.getValue()+"</option>");
@@ -178,7 +162,7 @@ dbController.DatabaseController
 					<br/><br/>
 					<form action="crud.jsp" method="post" onsubmit="return validateUpdate()" id="deleteForm">
 						<input type="hidden" name="operation" value="delete">
-						<input type="hidden" name="table" value="DepartmentModel">
+						<input type="hidden" name="table" value="Ship">
 						<input type="submit" value="Submit" />
 					</form>
 				</div>
