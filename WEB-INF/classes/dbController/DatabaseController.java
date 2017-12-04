@@ -94,50 +94,73 @@ public class DatabaseController {
 
 
   public void insertModel(int modelNum, String deptName, String modelName, float cost, int[] luxuryParts) throws SQLException{
-      String updateStatement = "INSERT INTO hdcovello.DepartmentModel (modelNum,modelname,modelcost,deptname) "
+    // Add a new model
+    String updateStatement = "INSERT INTO hdcovello.DepartmentModel (modelNum,modelname,modelcost,deptname) "
     		  + "VALUES (" + modelNum + ",'" + modelName + "'," + cost + ",'" + deptName + "')";
-      statement_.executeUpdate(updateStatement);
+    statement_.executeUpdate(updateStatement);
+
+    // Add the luxury parts associated with this model
 	  for(int i = 0; i < luxuryParts.length; i++){
-          updateStatement = "INSERT INTO hdcovello.LuxuryPartOfModel (modelNum,partNum, qty) "
-          + "VALUES (" + modelNum + "," + luxuryParts[i] + ",1)";
-          statement_.executeUpdate(updateStatement);
-      }
-      Commit();
+      updateStatement = "INSERT INTO hdcovello.LuxuryPartOfModel (modelNum,partNum, qty) "
+            + "VALUES (" + modelNum + "," + luxuryParts[i] + ",1)";
+      statement_.executeUpdate(updateStatement);
+    }
+    Commit();
   }
 
   public void insertShip(int shipNum, int modelNum, int custNum) throws SQLException{
-	  String queryStatement = "(SELECT partNum, qty FROM  LuxuryPartOfModel JOIN Part USING (partNum)) "
+    // Get the cost associated with the given modelnum
+    String queryStatement = "SELECT modelCost FROM DepartmentModel "
+        + "WHERE modelnum=" + modelNum;
+    ResultSet answer = statement_.executeQuery(queryStatement);
+    answer.next();
+    int cost = answer.getInt(1);
+
+    // Insert the actual ship
+    String updateStatement = "INSERT INTO hdcovello.ShipContract (shipnum,modelnum,custnum,status,totalCost) "
+        + "VALUES (" + shipNum + "," + modelNum + "," + custNum + ",'approved'," + cost + ")";
+    statement_.executeUpdate(updateStatement);
+
+    // Now insert the parts for that ship into PartToComplete
+    queryStatement = "(SELECT partNum, qty, price FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part USING (partNum)) "
 			  + "UNION "
-			  + "(SELECT partNum, 1 as “qty” FROM RequiredPart)";
-	  ResultSet answer = statement_.executeQuery(queryStatement);
+			  + "(SELECT partNum, 1 as “qty”,price FROM hdcovello.RequiredPart WHERE isRequired=0)";
+	  answer = statement_.executeQuery(queryStatement);
 	  while(answer.next()){
 		  int partNum = answer.getInt("partNum ");
 		  int qty= answer.getInt("qty ");
-		  String updateStatement = "INSERT INTO hdcovello.PartToComplete (shipnum,partnum,qtyleft) "
+		  updateStatement = "INSERT INTO hdcovello.PartToComplete (shipnum,partnum,qtyleft) "
 				  + "VALUES (" + shipNum + "," + partNum + "," + qty + ")";
 		  statement_.executeUpdate(updateStatement);
 	  }
 	  Commit();
   }
 
-  public void insertPart(int partNum, String partName, int price, boolean isRequired) throws SQLException{
-      String updateStatement = "INSERT INTO hdcovello.Part (partnum,partname,price,isrequired) "
+  public void insertPart(int partNum, String partName, int price, int isRequired) throws SQLException{
+    String updateStatement = "INSERT INTO hdcovello.Part (partnum,partname,price,isrequired) "
     		  + "VALUES (" + partNum + ",'" + partName + "'," + price + "," + isRequired + ")";
-      statement_.executeUpdate(updateStatement);
-      Commit();
+    statement_.executeUpdate(updateStatement);
+    Commit();
+  }
+
+  public void insertCustomer(int custNum, String firstName, String lastName) throws SQLException{
+    String updateStatement = "INSERT INTO hdcovello.Customer (custnum,firstname,lastname) "
+        + "VALUES (" + custNum + ",'" + firstName + "','" + lastName + "')";
+    statement_.executeUpdate(updateStatement);
+    Commit();
   }
 
   public List<Pair<Integer, String>> getModels() throws SQLException{
-      String queryStatement = "SELECT modelnum, modelname "
-    		  + "FROM hdcovello.DepartmentModel";
-      ResultSet answer = statement_.executeQuery(queryStatement);
-      List<Pair<Integer, String>> result = new ArrayList<Pair<Integer, String>>();
-      while(answer.next()){
-    	  int num = answer.getInt("modelnum");
-    	  String name = answer.getString("modelname");
-    	  result.add(new Pair<Integer,String>(new Integer(num), name));
-      }
-      return result;
+    String queryStatement = "SELECT modelnum, modelname "
+    	  + "FROM hdcovello.DepartmentModel";
+    ResultSet answer = statement_.executeQuery(queryStatement);
+    List<Pair<Integer, String>> result = new ArrayList<Pair<Integer, String>>();
+    while(answer.next()){
+      int num = answer.getInt("modelnum");
+      String name = answer.getString("modelname");
+      result.add(new Pair<Integer,String>(new Integer(num), name));
+    }
+    return result;
   }
 
   public int query1(int modelNum) throws SQLException{
@@ -163,21 +186,20 @@ public class DatabaseController {
 			  "AND EXISTS (SELECT shipNum FROM hdcovello.PartToComplete WHERE p.qtyLeft > 0)";
 	  ResultSet answer = statement_.executeQuery(query);
 	  List<Integer> result = new ArrayList<Integer>();
-      while(answer.next()){
-    	  int num = answer.getInt(1);
-    	  result.add(new Integer(num));
-      }
-      return result;
+    while(answer.next()){
+      int num = answer.getInt(1);
+      result.add(new Integer(num));
+    }
+    return result;
   }
 
   public Pair<Integer, Integer> query3() throws SQLException{
 	  String query = "select custNum, totalSpent from ( " +
-				"select custNum, sum(modelCost) as totalSpent from hdcovello.Customer " +
+				"select custNum, sum(afterMarkupCost) as totalSpent from hdcovello.Customer " +
 				"join hdcovello.ShipContract using (custNum) " +
-				"join hdcovello.DepartmentModel using (modelNum) " +
 				"group by custNum " +
 				"order by totalSpent desc " +
-			  	") where rownum = 1";
+			  ") where rownum = 1";
 	  ResultSet answer = statement_.executeQuery(query);
 	  answer.next();
 	  int custNum = answer.getInt("custNum");
