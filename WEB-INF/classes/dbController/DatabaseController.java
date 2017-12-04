@@ -142,23 +142,23 @@ public class DatabaseController {
 
   public int query1(int modelNum) throws SQLException{
 	  String query1 = "SELECT SUM(price * qty) "  +
-			    "FROM LuxuryPartOfModel JOIN Part using (partNum) " +
+			    "FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part using (partNum) " +
 			    "WHERE modelNum = " + modelNum;
 	  ResultSet answer1 = statement_.executeQuery(query1);
-	  String query2 = "SELECT SUM(price) FROM RequiredPart";
+	  String query2 = "SELECT SUM(price) FROM hdcovello.RequiredPart";
 	  ResultSet answer2 = statement_.executeQuery(query2);
 	  return answer1.getInt(1) + answer2.getInt(1);
   }
 
   public List<Integer> query2() throws SQLException{
-	  String query = "SELECT DISTINCT shipNum FROM ShipContract " +
-			  "JOIN PartToComplete p USING (shipNum) WHERE EXISTS " +
-			  "(((SELECT partNum, qty FROM LuxuryPartOfModel JOIN ShipContract USING (modelNum)) " +
+	  String query = "SELECT DISTINCT shipNum FROM hdcovello.ShipContract " +
+			  "JOIN hdcovello.PartToComplete p USING (shipNum) WHERE EXISTS " +
+			  "(((SELECT partNum, qty FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.ShipContract USING (modelNum)) " +
 			  "UNION " +
-			  "(SELECT partNum, 1 as 'qty' FROM Part WHERE isRequired = 1)) " +
+			  "(SELECT partNum, 1 as 'qty' FROM hdcovello.Part WHERE isRequired = 1)) " +
 			  "MINUS " +
-			  "(SELECT partNum, qtyLeft FROM PartToComplete JOIN ShipContract USING (shipNum))) " +
-			  "AND EXISTS (SELECT shipNum FROM PartToComplete WHERE p.qtyLeft > 0)";
+			  "(SELECT partNum, qtyLeft FROM hdcovello.PartToComplete JOIN hdcovello.ShipContract USING (shipNum))) " +
+			  "AND EXISTS (SELECT shipNum FROM hdcovello.PartToComplete WHERE p.qtyLeft > 0)";
 	  ResultSet answer = statement_.executeQuery(query);
 	  List<Integer> result = new ArrayList<Integer>();
       while(answer.next()){
@@ -166,6 +166,22 @@ public class DatabaseController {
     	  result.add(new Integer(num));
       }
       return result;
+  }
+
+  public Pair<Integer, Integer> query3(){
+	  String query = "select custNum, totalSpent from ( " +
+				"select custNum, sum(modelCost) as totalSpent from hdcovello.Customer " +
+				"join hdcovello.ShipContract using (custNum) " +
+				"join hdcovello.DepartmentModel using (modelNum) " +
+				"group by custNum " +
+				"order by totalSpent desc " +
+			  	") where rownum = 1";
+	  ResultSet answer = statement_.executeQuery(query);
+	  answer.next();
+	  int custNum = answer.getInt("custNum");
+	  int totalSpent = answer.getInt("totalSpent");
+	  Pair<Integer, Integer> answer = new Pair<Integer, Integer>(new Integer(custNum), new Integer(totalSpent));
+	  return answer;
   }
 
 }
