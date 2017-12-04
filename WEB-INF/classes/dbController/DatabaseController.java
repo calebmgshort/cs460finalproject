@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
 
+import javafx.util.Pair;
 /**
  * Servlet implementation class for Servlet: DatabaseController
  *
@@ -111,7 +112,7 @@ public class DatabaseController {
       String queryStatement = "SELECT (modelnum, modelname) "
     		  + "FROM hdcovello.DepartmentModel";
       ResultSet answer = statement_.executeQuery(queryStatement);
-      List<Pair<Integer, String>> result = new ArrayList<AbstractMap.SimpleEntry<Integer, String>>();
+      List<Pair<Integer, String>> result = new ArrayList<Pair<Integer, String>>();
       while(answer.next()){
     	  int num = answer.getInt("modelnum");
     	  String name = answer.getString("modelname");

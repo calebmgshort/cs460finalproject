@@ -107,13 +107,20 @@ dbController.DatabaseController
 					  <option selected disabled>Select model to update</option>
 					  <option value="test">test</option>
 						<%
-							ArrayList<Pair<Integer, String>> models = new ArrayList<Pair<Integer, String>>();
+							try{
+								DatabaseController controller = new DatabaseController();
+					  		String result = controller.Open();
 
-							models.add(new Pair<Integer, String>(1, "a"));
-							models.add(new Pair<Integer, String>(2, "b"));
+								ArrayList<Pair<Integer, String>> models = controller.getModels();
 
-							for (Pair<Integer, String> model : models){
-								out.write("<option value="+model.getKey()+">"+model.getValue()+"</option>");
+								for (Pair<Integer, String> model : models){
+									out.write("<option value="+model.getKey()+">"+model.getValue()+"</option>");
+								}
+
+								controller.Close();
+							}
+							catch(SQLException ex){
+
 							}
 						%>
 					</select>
