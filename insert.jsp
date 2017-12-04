@@ -31,11 +31,11 @@
   		request.setCharacterEncoding("utf-8");
  	 	response.setContentType("text/html;charset=utf-8");
 
-  		DatabaseController dbcontroller = new DatabaseController();
+  		DatabaseController controller = new DatabaseController();
   		// connect to backend database server via the databasecontroller, which
   		// is a wrapper class providing necessary methods for this particular
   		// application
-  		dbcontroller.Open();
+  		controller.Open();
 
       String table = request.getParameter("table");
 
@@ -65,7 +65,7 @@
             out.write(""+x);
           }
 
-          String result = dbController.insertModel(idNum, dept, model, costNum, partNums);
+          String result = controller.insertModel(idNum, dept, model, costNum, partNums);
 
           out.write(result);
       }
@@ -78,7 +78,7 @@
 
 
   		// close the dbcontroller and relase all resources occupied by it.
-  		dbcontroller.Close();
+  		controller.Close();
 	%>
 	</div>
 
