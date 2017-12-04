@@ -74,21 +74,21 @@ public class DatabaseController {
     }
   }
 
-  public void Open() {
+  public String Open() {
 	    try {
 	        Class.forName("oracle.jdbc.OracleDriver");
 	        connection_ = DriverManager.getConnection(connect_string_, username, password);
           connection_.setAutoCommit(false);
 	        statement_ = connection_.createStatement();
-	        return;
+	        return "success";
 	    } catch (SQLException sqlex) {
-	        sqlex.printStackTrace();
+	        return sqlex.printStackTrace();
 	    } catch (ClassNotFoundException e) {
-	        e.printStackTrace();
-	        System.exit(1); //programemer/dbsm error
+	        return e.printStackTrace();
+	        //System.exit(1); //programemer/dbsm error
 	    } catch (Exception ex) {
-	       ex.printStackTrace();
-	       System.exit(2);
+	       return ex.printStackTrace();
+	       //System.exit(2);
 	    }
   }
 
