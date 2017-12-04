@@ -102,7 +102,6 @@
 
         String name = request.getParameter("name");
         int price = Integer.parseInt(request.getParameter("price"));
-        int quantity = Integer.parseInt(request.getParameter("quantity"));
         String required = request.getParameter("required");
 
         int isRequired = 0;
@@ -115,10 +114,21 @@
           if(operation.equals("insert")){
             controller.insertPart(idNum, name, price, isRequired);
             out.write("<p>Inserted new part:</p>");
+            out.write("<p>ID Number: "+idNum+"</p>");
+            out.write("<p>Part Name: "+name+"</p>");
+            out.write("<p>Price: "+price+"</p>");
+            //out.write("<p>Quantity in stock: "+quantity+"</p>");
+            if (required != null){
+              out.write("<p>Required: Yes</p>");
+            }
+            else{
+              out.write("<p>Required: No</p>");
+            }
           }
           else if(operation.equals("update")){
-
-            out.write("<p>Updated values:</p>");
+            controller.updatePart(idNum, price);
+            out.write("<p>Updated part: "+idNum+"</p>");
+            out.write("<p>New price: "+price+"</p>");
           }
           else if(operation.equals("delete")){
 
@@ -126,16 +136,7 @@
             isDelete = true;
           }
           if(!isDelete){
-            out.write("<p>ID Number: "+idNum+"</p>");
-            out.write("<p>Part Name: "+name+"</p>");
-            out.write("<p>Price: "+price+"</p>");
-            out.write("<p>Quantity in stock: "+quantity+"</p>");
-            if (required != null){
-              out.write("<p>Required: Yes""</p>");
-            }
-            else{
-              out.write("<p>Required: No""</p>");
-            }
+
           }
         }
         catch(Exception ex){

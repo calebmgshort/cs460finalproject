@@ -90,13 +90,13 @@ dbController.DatabaseController
 							try{
 								DatabaseController controller = new DatabaseController();
 					  		controller.Open();
-/*
+
 								List<Pair<Integer, String>> models = controller.getParts();
 
 								for (Pair<Integer, String> model : models){
 									out.write("<option value="+model.getKey()+">"+model.getValue()+"</option>");
 								}
-*/
+
 								controller.Close();
 							}
 							catch(Exception ex){
@@ -126,13 +126,13 @@ dbController.DatabaseController
 							try{
 								DatabaseController controller = new DatabaseController();
 					  		controller.Open();
-/*
-								List<Pair<Integer, String>> models = controller.getPairs();
+
+								List<Pair<Integer, String>> models = controller.getParts();
 
 								for (Pair<Integer, String> model : models){
 									out.write("<option value="+model.getKey()+">"+model.getValue()+"</option>");
 								}
-*/
+
 								controller.Close();
 							}
 							catch(Exception ex){
