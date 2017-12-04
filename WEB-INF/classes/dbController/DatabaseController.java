@@ -93,7 +93,7 @@ public class DatabaseController {
   }
 
 
-  public String insertModel(int modelNum, String deptName, String modelName, float cost, int[] luxuryParts) {
+  public String insertModel(int modelNum, String deptName, String modelName, float cost, int[] luxuryParts) throws SQLException{
       String updateStatement = "INSERT INTO hdcovello.DepartmentModel (modelNum,modelname,modelcost,deptname) "
       + "values (" + modelNum + ",'" + modelName + "'," + cost + ",'" + deptName + "')";
       statement_.executeUpdate(updateStatement);
