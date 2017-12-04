@@ -37,6 +37,7 @@
   		// application
   		String result = controller.Open();
 
+
       if (!result.equals("success")){
         out.write(result);
       }
@@ -78,6 +79,8 @@
           }
 
           result = controller.insertModel(idNum, dept, model, costNum, partNums);
+
+          out.write(result);
       }
 
 
