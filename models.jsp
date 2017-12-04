@@ -57,7 +57,7 @@ dbController.DatabaseController
       <h1>Infinite Improbability Intergalactic Inc</h1>
       <h4>Let all your space dreams come true</h4>
 
-      <button><a href="Index.html">Home</a></button>
+      <button><a href="index.html">Home</a></button>
       <hr/>
 
 			<h2><u>Department Models</u></h2>
@@ -103,7 +103,6 @@ dbController.DatabaseController
 					<h3>Update</h3>
 					<select name="id" id="update" onchange="UpdateSelect()" form="updateForm">
 					  <option selected disabled>Select model to update</option>
-					  <option value="test">test</option>
 						<%
 							try{
 								DatabaseController controller = new DatabaseController();
@@ -157,7 +156,23 @@ dbController.DatabaseController
 					<h3>Delete</h3>
 					<select name="id" id="delete" onchange="deleteSelect()" form="deleteForm">
 					  <option selected disabled>Select model to delete</option>
-					  <option value="test">test</option>
+						<%
+							try{
+								DatabaseController controller = new DatabaseController();
+					  		controller.Open();
+
+								List<Pair<Integer, String>> models = controller.getModels();
+
+								for (Pair<Integer, String> model : models){
+									out.write("<option value="+model.getKey()+">"+model.getValue()+"</option>");
+								}
+
+								controller.Close();
+							}
+							catch(Exception ex){
+
+							}
+						%>
 					</select>
 					<br/><br/>
 					<form action="crud.jsp" method="post" onsubmit="return validateUpdate()" id="deleteForm">

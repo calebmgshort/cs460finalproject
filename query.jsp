@@ -41,52 +41,17 @@
         out.write(result);
       }
 
-      String table = request.getParameter("table");
-      String operation = request.getParameter("operation");
+      String query = request.getParameter("query");
 
-      if (table.equals("DepartmentModel")){
-          String id = request.getParameter("id");
+      if (query.equals("1")){
+          String id = request.getParameter("modelNum");
           int idNum = Integer.parseInt(id);
 
-          String dept = request.getParameter("dept");
-          String model = request.getParameter("model");
-          String cost = request.getParameter("cost");
-          float costNum = (float)Integer.parseInt(cost);
-
-          String[] parts = request.getParameterValues("parts");
-          int[] partNums = new int[parts.length];
-
-          int i = 0;
-          for (String num : parts){
-            partNums[i] = Integer.parseInt(num);
-            i++;
-          }
-
           try{
-            boolean isDelete = false;
-            if(operation.equals("insert")){
-              controller.insertModel(idNum, dept, model, costNum, partNums);
-              out.write("<p>Inserted new model:</p>");
-            }
-            else if(operation.equals("update")){
 
-              out.write("<p>Updated values:</p>");
-            }
-            else if(operation.equals("delete")){
+            int totalCost = controller.query1(idNum);
 
-              out.write("<p>Deleted DepartmentModel "+idNum+"</p>");
-              isDelete = true;
-            }
-            if(!isDelete){
-              out.write("<p>ID Number: "+idNum+"</p>");
-              out.write("<p>Department Name: "+dept+"</p>");
-              out.write("<p>Model Name: "+model+"</p>");
-              out.write("<p>Cost: "+cost+"</p>");
-              out.write("<p>Part Numbers: ");
-                for (int num : partNums){
-                  out.write(num + "; ");
-                }
-              out.write("</p>");
+            out.write("<p>Total cost of parts for model : "+totalCost+"</p>");
             }
           }
           catch(Exception ex){
