@@ -35,7 +35,10 @@
   		// connect to backend database server via the databasecontroller, which
   		// is a wrapper class providing necessary methods for this particular
   		// application
-  		controller.Open();
+  		String result = controller.Open();
+      if(!result.equals("success")){
+          out.write(result);
+      }
 
       String table = request.getParameter("table");
 
@@ -65,7 +68,7 @@
             out.write(""+x);
           }
 
-          String result = controller.insertModel(idNum, dept, model, costNum, partNums);
+          result = controller.insertModel(idNum, dept, model, costNum, partNums);
 
           out.write(result);
       }
