@@ -194,6 +194,18 @@ public class DatabaseController {
     return result;
   }
 
+  public List<Integer> getShips() throws SQLException{
+    String queryStatement = "SELECT shipNum "
+        + "FROM hdcovello.ShipContract";
+    ResultSet answer = statement_.executeQuery(queryStatement);
+    List<Integer> result = new ArrayList<Integer>();
+    while(answer.next()){
+      int shipNum = answer.getInt(1);
+      result.add(new Integer(shipNum));
+    }
+    return result;
+  }
+
   public int query1(int modelNum) throws SQLException{
 	  String query1 = "SELECT SUM(price * qty) "  +
 			    "FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part using (partNum) " +
