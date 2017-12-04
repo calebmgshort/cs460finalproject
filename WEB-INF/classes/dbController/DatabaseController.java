@@ -7,6 +7,7 @@ import java.sql.Statement;
 
 import java.sql.ResultSet;
 import java.util.*;
+import java.util.AbstractMap.SimpleEntry;
 
 /**
  * Servlet implementation class for Servlet: DatabaseController
@@ -95,15 +96,28 @@ public class DatabaseController {
 
   public String insertModel(int modelNum, String deptName, String modelName, float cost, int[] luxuryParts) throws SQLException{
       String updateStatement = "INSERT INTO hdcovello.DepartmentModel (modelNum,modelname,modelcost,deptname) "
-      + "values (" + modelNum + ",'" + modelName + "'," + cost + ",'" + deptName + "')";
+    		  + "values (" + modelNum + ",'" + modelName + "'," + cost + ",'" + deptName + "')";
       statement_.executeUpdate(updateStatement);
-	    for(int i = 0; i < luxuryParts.length; i++){
+	  for(int i = 0; i < luxuryParts.length; i++){
           updateStatement = "INSERT INTO hdcovello.LuxuryPartOfModel (modelNum,partNum, qty) "
           + "values (" + modelNum + "," + luxuryParts[i] + ",1)";
           statement_.executeUpdate(updateStatement);
       }
       Commit();
       return "success";
+  }
+
+  public List<AbstractMap.SimpleEntry<Integer, String>> getModels() throws SQLException{
+      String queryStatement = "SELECT (modelnum, modelname) "
+    		  + "FROM hdcovello.DepartmentModel";
+      ResultSet answer = statement_.executeQuery(queryStatement);
+      List<AbstractMap.SimpleEntry<Integer, String>> result = new ArrayList<AbstractMap.SimpleEntry<Integer, String>>();
+      while(answer.next()){
+    	  int num = answer.getInt("modelnum");
+    	  String name = answer.getString("modelname");
+    	  result.add(new AbstractMap.SimpleEntry<Integer,String>(new Integer(num), name));
+      }
+      return result;
   }
 
 
