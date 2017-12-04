@@ -82,12 +82,12 @@ public class DatabaseController {
 	        statement_ = connection_.createStatement();
 	        return "success";
 	    } catch (SQLException sqlex) {
-	        return sqlex.printStackTrace();
+	        return sqlex.toString();
 	    } catch (ClassNotFoundException e) {
-	        return e.printStackTrace();
+	        return e.toString();
 	        //System.exit(1); //programemer/dbsm error
 	    } catch (Exception ex) {
-	       return ex.printStackTrace();
+	       return ex.toString();
 	       //System.exit(2);
 	    }
   }
