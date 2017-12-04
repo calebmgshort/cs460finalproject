@@ -97,7 +97,7 @@ public class DatabaseController {
 
       // Make sure that the provided number of luxury parts is between 3 and 10
       if(luxuryParts.length < 3 || luxuryParts.length > 10){
-          return "The number of luxury parts for a given ship must be between 3 and 10"
+          return "The number of luxury parts for a given ship must be between 3 and 10";
       }
       //String queryStatement =
 
