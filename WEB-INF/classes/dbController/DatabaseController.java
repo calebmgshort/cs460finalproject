@@ -127,18 +127,8 @@ public class DatabaseController {
       Commit();
   }
 
-  public int query1(int modelNum) throws SQLException{
-	  String query1 = "SELECT SUM(price * qty) "  +
-			    "FROM LuxuryPartOfModel JOIN Part using (partNum) " +
-			    "WHERE modelNum = " + modelNum;
-	  ResultSet answer1 = statement_.executeQuery(query1);
-	  String query2 = "SELECT SUM(price) FROM RequiredPart";
-	  ResultSet answer2 = statement_.executeQuery(query2);
-	  return answer1.getInt(1) + answer2.getInt(1);
-  }
-
   public List<Pair<Integer, String>> getModels() throws SQLException{
-      String queryStatement = "SELECT (modelnum, modelname) "
+      String queryStatement = "SELECT modelnum, modelname "
     		  + "FROM hdcovello.DepartmentModel";
       ResultSet answer = statement_.executeQuery(queryStatement);
       List<Pair<Integer, String>> result = new ArrayList<Pair<Integer, String>>();
@@ -150,6 +140,32 @@ public class DatabaseController {
       return result;
   }
 
+  public int query1(int modelNum) throws SQLException{
+	  String query1 = "SELECT SUM(price * qty) "  +
+			    "FROM LuxuryPartOfModel JOIN Part using (partNum) " +
+			    "WHERE modelNum = " + modelNum;
+	  ResultSet answer1 = statement_.executeQuery(query1);
+	  String query2 = "SELECT SUM(price) FROM RequiredPart";
+	  ResultSet answer2 = statement_.executeQuery(query2);
+	  return answer1.getInt(1) + answer2.getInt(1);
+  }
 
+  public List<Integer> query2() throws SQLException{
+	  String query = "SELECT DISTINCT shipNum FROM ShipContract " +
+			  "JOIN PartToComplete p USING (shipNum) WHERE EXISTS " +
+			  "(((SELECT partNum, qty FROM LuxuryPartOfModel JOIN ShipContract USING (modelNum)) " +
+			  "UNION " +
+			  "(SELECT partNum, 1 as 'qty' FROM Part WHERE isRequired = 1)) " +
+			  "MINUS " +
+			  "(SELECT partNum, qtyLeft FROM PartToComplete JOIN ShipContract USING (shipNum))) " +
+			  "AND EXISTS (SELECT shipNum FROM PartToComplete WHERE p.qtyLeft > 0)";
+	  ResultSet answer = statement_.executeQuery(query);
+	  List<Integer> result = new ArrayList<Integer>();
+      while(answer.next()){
+    	  int num = answer.getInt(1);
+    	  result.add(new Integer(num));
+      }
+      return result;
+  }
 
 }
