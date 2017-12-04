@@ -41,7 +41,7 @@ public class DatabaseController {
     username = "calebmgshort";
     // your Oracle password, NNNN is the last four digits of your CSID
     password = "Cmg21514007!";
-    connect_string_ = "jdbc:oracle:thin:@aloe.cs.arizona.edu:5243:oracle";
+    connect_string_ = "jdbc:oracle:thin:@aloe.cs.arizona.edu:1521:oracle";
   }
 
 
@@ -78,7 +78,7 @@ public class DatabaseController {
 	    try {
 	        Class.forName("oracle.jdbc.OracleDriver");
 	        connection_ = DriverManager.getConnection(connect_string_, username, password);
-          connection_.setAutoCommit(false);
+          	connection_.setAutoCommit(false);
 	        statement_ = connection_.createStatement();
 	        return "success";
 	    } catch (SQLException sqlex) {
@@ -99,17 +99,14 @@ public class DatabaseController {
       if(luxuryParts.length < 3 || luxuryParts.length > 10){
           return "The number of luxury parts for a given ship must be between 3 and 10";
       }
-      //String queryStatement =
 
       try{
-          String updateStatement = "INSERT INTO hdcovello.DepartmentModel "
-          + "values (modelNum,modelname,modelcost,deptname) "
-          + "(" + modelName + "," + cost + "," + deptName + ")";
+          String updateStatement = "INSERT INTO hdcovello.DepartmentModel (modelNum,modelname,modelcost,deptname) "
+          + "values (" + modelNum + ",'" + modelName + "'," + cost + ",'" + deptName + "')";
           statement_.executeUpdate(updateStatement);
-          for(int i = 0; i < luxuryParts.length; i++){
-              updateStatement = "INSERT INTO hdcovello.LuxuryPartOfModel "
-              + "values (modelNum,partNum) "
-              + "(" + modelNum + "," + modelName + ")";
+	  for(int i = 0; i < luxuryParts.length; i++){
+              updateStatement = "INSERT INTO hdcovello.LuxuryPartOfModel (modelNum,partNum, qty) "
+              + "values (" + modelNum + "," + luxuryParts[i] + ",1)";
               statement_.executeUpdate(updateStatement);
           }
       }  catch (SQLException e){
