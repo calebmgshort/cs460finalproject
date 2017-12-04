@@ -143,21 +143,20 @@ public class DatabaseController {
     Commit();
   }
 
-  public void updateShip(int shipNum, int partNum){
-    /*
-    String queryStatement = "SELECT modelCost FROM DepartmentModel "
-        + "WHERE modelnum=" + modelNum;
+  public void updateShip(int shipNum, int partNum) throws SQLException{
+
+    String queryStatement = "SELECT price FROM hdcovello.Part "
+        + "WHERE partnum=" + partNum;
     ResultSet answer = statement_.executeQuery(queryStatement);
     answer.next();
-    int cost = answer.getInt(1);
-
+    int price = answer.getInt(1);
 
     String updateStatement = "UPDATE hdcovello.ShipContract "
-          + "SET afterMarkupCost = afterMarkupCost + " +
-    		  + "WHERE shipnum=" + shipNum;
+          + "SET afterMarkupCost = afterMarkupCost + " + price
+    		  + " WHERE shipnum=" + shipNum;
     statement_.executeUpdate(updateStatement);
     Commit();
-    */
+
   }
 
   public void insertPart(int partNum, String partName, int price, int isRequired) throws SQLException{
