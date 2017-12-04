@@ -145,9 +145,11 @@ public class DatabaseController {
 			    "FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part using (partNum) " +
 			    "WHERE modelNum = " + modelNum;
 	  ResultSet answer1 = statement_.executeQuery(query1);
+    answer1.next();
 	  String query2 = "SELECT SUM(price) FROM hdcovello.RequiredPart";
 	  ResultSet answer2 = statement_.executeQuery(query2);
-	  return answer1.getInt(1) + answer2.getInt(1);
+    answer2.next();
+    return answer1.getInt(1) + answer2.getInt(1);
   }
 
   public List<Integer> query2() throws SQLException{
