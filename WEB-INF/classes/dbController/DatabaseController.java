@@ -94,24 +94,13 @@ public class DatabaseController {
 
 
   public String insertModel(int modelNum, String deptName, String modelName, float cost, int[] luxuryParts) {
-
-      // Make sure that the provided number of luxury parts is between 3 and 10
-      if(luxuryParts.length < 3 || luxuryParts.length > 10){
-          return "The number of luxury parts for a given ship must be between 3 and 10";
-      }
-
-      try{
-          String updateStatement = "INSERT INTO hdcovello.DepartmentModel (modelNum,modelname,modelcost,deptname) "
-          + "values (" + modelNum + ",'" + modelName + "'," + cost + ",'" + deptName + "')";
+      String updateStatement = "INSERT INTO hdcovello.DepartmentModel (modelNum,modelname,modelcost,deptname) "
+      + "values (" + modelNum + ",'" + modelName + "'," + cost + ",'" + deptName + "')";
+      statement_.executeUpdate(updateStatement);
+	    for(int i = 0; i < luxuryParts.length; i++){
+          updateStatement = "INSERT INTO hdcovello.LuxuryPartOfModel (modelNum,partNum, qty) "
+          + "values (" + modelNum + "," + luxuryParts[i] + ",1)";
           statement_.executeUpdate(updateStatement);
-	  for(int i = 0; i < luxuryParts.length; i++){
-              updateStatement = "INSERT INTO hdcovello.LuxuryPartOfModel (modelNum,partNum, qty) "
-              + "values (" + modelNum + "," + luxuryParts[i] + ",1)";
-              statement_.executeUpdate(updateStatement);
-          }
-      }  catch (SQLException e){
-          return e.toString();
-          // TODO: handle if there is an error
       }
       Commit();
       return "success";
