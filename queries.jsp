@@ -74,7 +74,7 @@ dbController.DatabaseController
 						controller.Close();
 					}
 					catch(Exception ex){
-
+							out.write("<option value=1>"+ex.toString()+"</option>");
 					}
 				%>
 			</select>
