@@ -93,7 +93,8 @@ public class DatabaseController {
   }
 
 
-  public void insertModel(int modelNum, String deptName, String modelName, float cost, int[] luxuryParts) throws SQLException{
+  public void insertModel(int modelNum, String deptName, String modelName,
+        float cost, int[] luxuryParts) throws SQLException{
     // Add a new model
     String updateStatement = "INSERT INTO hdcovello.DepartmentModel (modelNum,modelname,modelcost,deptname) "
     		  + "VALUES (" + modelNum + ",'" + modelName + "'," + cost + ",'" + deptName + "')";
@@ -122,7 +123,8 @@ public class DatabaseController {
     statement_.executeUpdate(updateStatement);
 
     // Now insert the parts for that ship into PartToComplete
-    queryStatement = "(SELECT partNum, qty, price FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part USING (partNum)) "
+    queryStatement = "(SELECT partNum, qty, price "
+        + "FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part USING (partNum)) "
 			  + "UNION "
 			  + "(SELECT partNum, 1 as “qty”,price FROM hdcovello.RequiredPart WHERE isRequired=0)";
 	  answer = statement_.executeQuery(queryStatement);
@@ -217,6 +219,22 @@ public class DatabaseController {
       result.add(new Integer(shipNum));
     }
     return result;
+  }
+
+  public List<Pair<Integer,Pair<String,Integer>>> getRemainingShipParts(int shipNum) throws SQLException{
+      String queryStatement = "SELECT partnum,partname,qtyleft "
+          + "FROM hdcovello.PartToComplete JOIN hdcovello.Part using (partnum) "
+          + "WHERE shipNum=" + shipNum;
+      ResultSet answer = statement_.executeQuery(queryStatement);
+      List<Pair<Integer,Pair<String,Integer>>> result = new ArrayList<Pair<Integer,Pair<String,Integer>>>();
+      while(answer.next()){
+        int partNum = answer.getInt(1);
+        String partName = answer.getString(2);
+        int qtyLeft = answer.getInt(3);
+        Pair<String,Integer> singleAnswerPart = new Pair<String,Integer>(partName,new Integer(qtyLeft));
+        result.add(new Pair<Integer,Pair<String,Integer>>(new Integer(partNum), singleAnswerPart));
+      }
+      return result;
   }
 
   public int query1(int modelNum) throws SQLException{
