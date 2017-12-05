@@ -286,6 +286,18 @@ public class DatabaseController {
 	  return ans;
   }
 
-
+  public List<Integer> query4(String username, String status) throws SQLException{
+    // TODO: implement query 4
+    String query = "Select distinct sc.shipNum as 'ORDERNUM', modelName, afterMarkupCost as 'COST' "
+    + "from ShipContract sc "
+    + "join PartToComplete p on sc.shipNum = p.shipNum "
+    + "join DepartmentModel using (modelNum) "
+    + "join Customer using (custNum) "
+    + "where username = '" + username + "' and not exists ("
+	  + "select * from PartToComplete "
+	  + "join ShipContract using (shipNum) "
+	  + "where p.qtyLeft != 0 and sc.shipNum = shipNum)";
+    return null;
+  }
 
 }
