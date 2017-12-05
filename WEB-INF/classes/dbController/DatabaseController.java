@@ -170,7 +170,7 @@ public class DatabaseController {
 
   public void updatePart(int partNum, int newPrice) throws SQLException{
     String updateStatement = "UPDATE hdcovello.Part "
-    		  + "SET newprice = " + newPrice
+    		  + "SET price = " + newPrice
           + " WHERE partnum = " + partNum;
     statement_.executeUpdate(updateStatement);
     Commit();

@@ -101,22 +101,34 @@
         int idNum = Integer.parseInt(id);
 
         String name = request.getParameter("name");
-        String price = request.getParameter("price");
-        String quantity = request.getParameter("quantity");
+        int price = Integer.parseInt(request.getParameter("price"));
         String required = request.getParameter("required");
 
-        float priceNum = (float)Integer.parseInt(price);
-        int quantityNum = Integer.parseInt(quantity);
+        int isRequired = 0;
+        if (required != null){
+          isRequired = 1;
+        }
 
         try{
           boolean isDelete = false;
           if(operation.equals("insert")){
-            controller.insertPart(idNum, name, price, required, quantity);
+            controller.insertPart(idNum, name, price, isRequired);
             out.write("<p>Inserted new part:</p>");
+            out.write("<p>ID Number: "+idNum+"</p>");
+            out.write("<p>Part Name: "+name+"</p>");
+            out.write("<p>Price: "+price+"</p>");
+            //out.write("<p>Quantity in stock: "+quantity+"</p>");
+            if (required != null){
+              out.write("<p>Required: Yes</p>");
+            }
+            else{
+              out.write("<p>Required: No</p>");
+            }
           }
           else if(operation.equals("update")){
-
-            out.write("<p>Updated values:</p>");
+            controller.updatePart(idNum, price);
+            out.write("<p>Updated part: "+idNum+"</p>");
+            out.write("<p>New price: "+price+"</p>");
           }
           else if(operation.equals("delete")){
 
@@ -124,11 +136,7 @@
             isDelete = true;
           }
           if(!isDelete){
-            out.write("<p>ID Number: "+idNum+"</p>");
-            out.write("<p>Part Name: "+name+"</p>");
-            out.write("<p>Price: "+price+"</p>");
-            out.write("<p>Quantity in stock: "+quantity+"</p>");
-            out.write("<p>Required?: "+required+"</p>");
+
           }
         }
         catch(Exception ex){
@@ -139,12 +147,43 @@
         }
       }
       else if (table.equals("Ship")){
+        int shipId = Integer.parseInt(request.getParameter("id"));
+        int modelId = Integer.parseInt(request.getParameter("modelNum"));
+        int custId = Integer.parseInt(request.getParameter("custNum"));
 
+
+        try{
+          boolean isDelete = false;
+          if(operation.equals("insert")){
+            controller.insertShip(shipId, modelId, custId);
+            out.write("<p>Inserted new ship:</p>");
+          }
+          else if(operation.equals("update")){
+
+            out.write("<p>Updated values:</p>");
+          }
+          else if(operation.equals("delete")){
+
+            out.write("<p>Deleted ship "+shipId+"</p>");
+            isDelete = true;
+          }
+          if(!isDelete){
+            out.write("<p>Ship: "+shipId+"</p>");
+            out.write("<p>Model: "+modelId+"</p>");
+            out.write("<p>Customer: "+custId+"</p>");
+          }
+        }
+        catch(Exception ex){
+          out.write("<p>"+"Ahh! SOrry this no work. =/"+"</p>");
+          out.write("<p>"+ex.toString()+"</p>");
+          out.write("<p>"+"</p>");
+          //out.write("<p>"+ex.StackTrace)
+        }
       }
 
 
   		out.write("<hr/>");
-      out.write("<button><a href=\"Index.html\">Home</a></button>");
+      out.write("<button><a href=\"index.html\">Home</a></button>");
 
   		// close the dbcontroller and relase all resources occupied by it.
   	  controller.Close();

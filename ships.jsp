@@ -70,12 +70,11 @@ dbController.DatabaseController
 							<div class="data">
 							<input type="hidden" name="operation" value="insert">
 							<input type="hidden" name="table" value="Ship">
-							ID Number: <input type="number" min="0" name="id" id="insertId"><br/>
-						  First Name: <input type="text" name="firstName" id="insertFirstName"><br/>
-							Last Name: <input type="text" name="lastName" id="insertLastName"><br/>
+							Ship ID: <input type="number" min="0" name="id" id="insertId"><br/>
+						  Customer ID: <input type="number" min="0" name="custNum" id="insertCustNum"><br/>
 
 							<select name="modelNum" id="insertModelNum" form="insertForm">
-							  <option selected disabled>Select part to update</option>
+							  <option selected disabled>Select model to order</option>
 								<%
 									try{
 										DatabaseController controller = new DatabaseController();
@@ -94,7 +93,7 @@ dbController.DatabaseController
 									}
 								%>
 							</select>
-
+							<br/>
 							</div>
 						  <input type="submit" value="Submit" />
 						</form>
@@ -108,13 +107,13 @@ dbController.DatabaseController
 							try{
 								DatabaseController controller = new DatabaseController();
 					  		controller.Open();
-
+/*
 								List<Pair<Integer, String>> models = controller.getShips();
 
 								for (Pair<Integer, String> model : models){
 									out.write("<option value="+model.getKey()+">"+model.getValue()+"</option>");
 								}
-
+*/
 								controller.Close();
 							}
 							catch(Exception ex){
@@ -145,13 +144,13 @@ dbController.DatabaseController
 							try{
 								DatabaseController controller = new DatabaseController();
 					  		controller.Open();
-
+/*
 								List<Pair<Integer, String>> models = controller.getShip();
 
 								for (Pair<Integer, String> model : models){
 									out.write("<option value="+model.getKey()+">"+model.getValue()+"</option>");
 								}
-
+*/
 								controller.Close();
 							}
 							catch(Exception ex){
@@ -191,23 +190,19 @@ function CheckLuxuryCount(select){
 }
 
 function validateInsert(){
-	if (CheckLuxuryCount(document.getElementById("insertParts"))){
-		if (document.getElementById("insertDept").value != ""){
-			if (document.getElementById("insertModel").value != ""){
-				if (document.getElementById("insertCost").value != ""){
-					if (document.getElementById("insertID").value > "0"){
-						return true;
-					}
-				}
+	if (document.getElementById("insertCustNum").value != ""){
+		if (document.getElementById("insertModelNum").value != ""){
+			if (document.getElementById("insertID").value > "0"){
+				return true;
 			}
 		}
 	}
+
 
 	return false;
 }
 
 function validateUpdate(){
-	if (CheckLuxuryCount(document.getElementById("updateParts"))){
 		if (document.getElementById("updateDept").value != ""){
 			if (document.getElementById("updateModel").value != ""){
 				if (document.getElementById("updateCost").value != ""){
@@ -217,7 +212,7 @@ function validateUpdate(){
 				}
 			}
 		}
-	}
+
 
 	return false;
 }

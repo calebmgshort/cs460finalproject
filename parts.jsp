@@ -111,7 +111,6 @@ dbController.DatabaseController
 						<div class="data">
 
 							Price: <input type="number" name="price" id="updatePrice"><br/>
-							Quantity: <input type="number" name="quantity" id="updateQuantity"><br/>
 
 						</div>
 						<br/><br/>
@@ -128,7 +127,7 @@ dbController.DatabaseController
 								DatabaseController controller = new DatabaseController();
 					  		controller.Open();
 
-								List<Pair<Integer, String>> models = controller.getPairs();
+								List<Pair<Integer, String>> models = controller.getParts();
 
 								for (Pair<Integer, String> model : models){
 									out.write("<option value="+model.getKey()+">"+model.getValue()+"</option>");
@@ -177,10 +176,8 @@ function validateInsert(){
 
 function validateUpdate(){
 	if (document.getElementById("updatePrice").value != ""){
-		if (document.getElementById("updateQuantity").value != ""){
-			if (document.getElementById("update").selectedIndex > 0){
-				return true;
-			}
+		if (document.getElementById("update").selectedIndex > 0){
+			return true;
 		}
 	}
 
