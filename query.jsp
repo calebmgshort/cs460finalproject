@@ -56,7 +56,7 @@
           catch(Exception ex){
             out.write("<p>"+"Ahh! SOrry this no work. =/"+"</p>");
             out.write("<p>"+ex.toString()+"</p>");
-            out.write("<p>"+"</p>");
+            out.write("<p>"+idNum+"</p>");
             //out.write("<p>"+ex.StackTrace)
           }
       }
