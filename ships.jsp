@@ -60,7 +60,7 @@ dbController.DatabaseController
       <button><a href="index.html">Home</a></button>
       <hr/>
 
-			<h2><u>Parts</u></h2>
+			<h2><u>Ships</u></h2>
 
 			<div class="row">
 				<div class="column">
