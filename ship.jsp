@@ -75,7 +75,15 @@ dbController.DatabaseController
       }
 
       String id = request.getParameter("id");
-      List<Pair<Integer,Pair<String,Integer>>> rows = getRemainingShipParts(Integer.parse(id));
+      String part = request.getParameter("part");
+
+      if (part != null){
+        out.write("buidl part");
+        controller.updateShip(Integer.parseInt(id), Integer.parseInt(part));
+      }
+
+
+      List<Pair<Integer,Pair<String,Integer>>> rows = controller.getRemainingShipParts(Integer.parseInt(id));
 
       out.write("<h3>Ship "+id+"</h3>");
 
@@ -94,27 +102,25 @@ dbController.DatabaseController
     		"<th><u>Quantity Remaining</u></th> " +
     		"<th>&nbsp;&nbsp;&nbsp;&nbsp;</th></tr>");
 
-      		if (vecResult != null && vecResult.size() > 0) {
-        		for (int i = 0; i < vecResult.size(); i++) {
-          			String row = vecResult.get(i);
-         		 	String[] detail = row.split("##");
-          			if (detail.length != 4) {
-            		//break;
-          			}
+        		for (Pair<Integer,Pair<String,Integer>> row : rows) {
 
-         	 		content.append(
-              			"<tr id=\"tablerow_" + i + "\">");
-          			content.append(
-              			"<td class=\"postlist\">" +
-              			detail[0] + "</td>");
-          			content.append(
-              			"<td>" + detail[1] + "</td>");
-          			content.append("<td>" + detail[2] + "</td>" +
-                         "<td> &nbsp;&nbsp;" + detail[3] + "</td>");
-          			content.append("</tr>");
+              int partNum = row.getKey();
+              String partName = row.getValue().getKey();
+              int partQuantity = row.getValue().getValue();
+
+         	 		out.write("<tr>");
+          			out.write("<td>" + partName + "</td>");
+          			out.write("<td>" + partQuantity + "</td>");
+          			out.write("<td>" +
+                "<form action=\"ship.jsp\" method=\"post\">" +
+                "<input type=\"hidden\" name=\"id\" value=\""+id+"\">" +
+                "<input type=\"hidden\" name=\"part\" value=\""+partNum+"\">" +
+                "<input type=\"submit\" value=\"Build\" />" +
+                "</form>" +
+                "</td>");
+          			out.write("</tr>");
         		}
-      		}
-      		out.write(content.toString());
+
     		out.write("</table><hr/>");
 
       }

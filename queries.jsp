@@ -58,6 +58,7 @@ dbController.DatabaseController
       <button><a href="index.html">Home</a></button>
       <hr/>
 
+			<h3>Query 1</h3>
 			<select name="modelNum" id="modelSelect" form="query1Form">
 				<option selected disabled>Select model</option>
 				<%
@@ -83,7 +84,11 @@ dbController.DatabaseController
 				<input type="submit" value="Get Cost of Parts" />
 			</form>
 
-			<button>Get Incomplete Ships</button></br>
+			<h3>Query 2</h3>
+			<form action="query.jsp" method="post">
+				<input type="hidden" name="query" value="2">
+				<input type="submit" value="Get Incomplete Ships" />
+			</form>
 			<button>Get MVP Customer</button></br>
 
     </div>

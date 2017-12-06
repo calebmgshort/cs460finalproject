@@ -147,15 +147,16 @@
         }
       }
       else if (table.equals("Ship")){
-        int shipId = Integer.parseInt(request.getParameter("id"));
-        int modelId = Integer.parseInt(request.getParameter("modelNum"));
-        int custId = Integer.parseInt(request.getParameter("custNum"));
+
+        String ship = request.getParameter("id");
+        String model = request.getParameter("modelNum");
+        String cust = request.getParameter("custNum");
 
 
         try{
           boolean isDelete = false;
           if(operation.equals("insert")){
-            controller.insertShip(shipId, modelId, custId);
+            controller.insertShip(Integer.parseInt(ship), Integer.parseInt(model), Integer.parseInt(cust));
             out.write("<p>Inserted new ship:</p>");
           }
           else if(operation.equals("update")){
@@ -164,13 +165,13 @@
           }
           else if(operation.equals("delete")){
 
-            out.write("<p>Deleted ship "+shipId+"</p>");
+            out.write("<p>Deleted ship "+ship+"</p>");
             isDelete = true;
           }
           if(!isDelete){
-            out.write("<p>Ship: "+shipId+"</p>");
-            out.write("<p>Model: "+modelId+"</p>");
-            out.write("<p>Customer: "+custId+"</p>");
+            out.write("<p>Ship: "+ship+"</p>");
+            out.write("<p>Model: "+model+"</p>");
+            out.write("<p>Customer: "+cust+"</p>");
           }
         }
         catch(Exception ex){

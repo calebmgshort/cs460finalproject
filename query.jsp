@@ -44,26 +44,41 @@
       String query = request.getParameter("query");
 
       if (query.equals("1")){
+        try{
           String id = request.getParameter("modelNum");
           int idNum = Integer.parseInt(id);
 
-          try{
+          int totalCost = controller.query1(idNum);
 
-            int totalCost = controller.query1(idNum);
-
-            out.write("<p>Total cost of parts for model : "+totalCost+"</p>");
-            }
-          catch(Exception ex){
-            out.write("<p>"+"Ahh! SOrry this no work. =/"+"</p>");
-            out.write("<p>"+ex.toString()+"</p>");
-            out.write("<p>"+idNum+"</p>");
-            //out.write("<p>"+ex.StackTrace)
+          out.write("<p>Total cost of parts for model : "+totalCost+"</p>");
           }
+        catch(Exception ex){
+          out.write("<p>"+"Ahh! SOrry this no work. =/"+"</p>");
+          out.write("<p>"+ex.toString()+"</p>");
+        }
+      }
+      else if (query.equals("2")){
+        try{
+          out.write("<p>The following ships are currently under construction:</p>");
+
+          List<Integer> ships = controller.query2();
+
+          for (Integer ship : ships){
+            out.write("<p>Ship "+ship+"</p>");
+          }
+        }
+        catch(Exception ex){
+          out.write("<p>"+"Ahh! SOrry this no work. =/"+"</p>");
+          out.write("<p>"+ex.toString()+"</p>");
+        }
+      }
+      else if (query.equals("3")){
+
       }
 
 
   		out.write("<hr/>");
-      out.write("<button><a href=\"Index.html\">Home</a></button>");
+      out.write("<button><a href=\"index.html\">Home</a></button>");
 
   		// close the dbcontroller and relase all resources occupied by it.
   	  controller.Close();
