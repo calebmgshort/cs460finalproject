@@ -1,3 +1,32 @@
+/*+----------------------------------------------------------------------
+ ||
+ ||  Class DatabaseController
+ ||
+ ||         Author:  Caleb short (adapted from the starter file)
+ ||
+ ||        Purpose:  This class exists to interface between the front-end and
+ ||                  the database
+ ||
+ ||  Inherits From:  None
+ ||
+ ||     Interfaces:  None
+ ||
+ |+-----------------------------------------------------------------------
+ ||
+ ||      Constants:  None
+ ||
+ |+-----------------------------------------------------------------------
+ ||
+ ||   Constructors:  pubic DatabaseController(): No arguments
+ ||
+ ||  Class Methods:  [List the names, arguments, and return types of all
+ ||                   public class methods.]
+ ||
+ ||  Inst. Methods:  TODO[List the names, arguments, and return types of all
+ ||                   public instance methods.]
+ ||
+ ++-----------------------------------------------------------------------*/
+
 package dbController;
 
 import java.sql.Connection;
@@ -204,6 +233,19 @@ public class DatabaseController {
   public List<Pair<Integer, String>> getParts() throws SQLException{
     String queryStatement = "SELECT partnum, partname "
         + "FROM hdcovello.Part";
+    ResultSet answer = statement_.executeQuery(queryStatement);
+    List<Pair<Integer, String>> result = new ArrayList<Pair<Integer, String>>();
+    while(answer.next()){
+      int num = answer.getInt("partnum");
+      String name = answer.getString("partname");
+      result.add(new Pair<Integer,String>(new Integer(num), name));
+    }
+    return result;
+  }
+
+  public List<Pair<Integer, String>> getLuxuryParts() throws SQLException{
+    String queryStatement = "SELECT partnum, partname "
+        + "FROM hdcovello.Part WHERE isrequired=0";
     ResultSet answer = statement_.executeQuery(queryStatement);
     List<Pair<Integer, String>> result = new ArrayList<Pair<Integer, String>>();
     while(answer.next()){
