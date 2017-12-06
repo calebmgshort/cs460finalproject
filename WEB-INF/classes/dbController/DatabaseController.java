@@ -111,23 +111,23 @@ public class DatabaseController {
 
   public void insertShip(int shipNum, int modelNum, int custNum) throws SQLException{
     // Get the cost associated with the given modelnum
-    //String queryStatement = "SELECT modelCost FROM hdcovello.DepartmentModel "
-    //    + "WHERE modelnum=" + modelNum;
-    //ResultSet answer = statement_.executeQuery(queryStatement);
-    //answer.next();
-    //int cost = answer.getInt(1);
+    String queryStatement = "SELECT modelCost FROM hdcovello.DepartmentModel "
+        + "WHERE modelnum=" + modelNum;
+    ResultSet answer = statement_.executeQuery(queryStatement);
+    answer.next();
+    int cost = answer.getInt(1);
 
     // Insert the actual ship
     String updateStatement = "INSERT INTO hdcovello.ShipContract (shipnum,modelnum,custnum,aftermarkupcost) "
-        + "VALUES (" + shipNum + "," + modelNum + "," + custNum + ",0)";
+        + "VALUES (" + shipNum + "," + modelNum + "," + custNum + "," + cost + ")";
     statement_.executeUpdate(updateStatement);
 
     // Now insert the parts for that ship into PartToComplete
-    String queryStatement = "(SELECT partnum,qty,price "
+    queryStatement = "(SELECT partnum,qty,price "
         + "FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part USING (partnum)) "
 			  + "UNION "
 			  + "(SELECT partnum,1 as \"qty\",price FROM hdcovello.Part WHERE isrequired=0)";
-	  ResultSet answer = statement_.executeQuery(queryStatement);
+	  answer = statement_.executeQuery(queryStatement);
 	  while(answer.next()){
 		  int partNum = answer.getInt(1);
 		  int qty = answer.getInt(2);
@@ -297,8 +297,8 @@ public class DatabaseController {
 	  answer.next();
 	  int custNum = answer.getInt("custNum");
 	  int totalSpent = answer.getInt("totalSpent");
-	  Pair<Integer, Integer> ans = new Pair<Integer, Integer>(new Integer(custNum), new Integer(totalSpent));
-	  return ans;
+	  Pair<Integer, Integer> result = new Pair<Integer, Integer>(new Integer(custNum), new Integer(totalSpent));
+	  return result;
   }
 
   public List<Integer> query4(String username, String status) throws SQLException{
@@ -313,6 +313,10 @@ public class DatabaseController {
 	  + "join ShipContract using (shipNum) "
 	  + "where p.qtyLeft != 0 and sc.shipNum = shipNum)";
     return null;
+  }
+
+  public void query5(){
+    // TODO: implement query5
   }
 
 }

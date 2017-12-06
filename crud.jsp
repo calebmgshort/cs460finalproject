@@ -154,24 +154,17 @@
 
 
         try{
-          boolean isDelete = false;
           if(operation.equals("insert")){
             controller.insertShip(Integer.parseInt(ship), Integer.parseInt(model), Integer.parseInt(cust));
             out.write("<p>Inserted new ship:</p>");
-          }
-          else if(operation.equals("update")){
-
-            out.write("<p>Updated values:</p>");
-          }
-          else if(operation.equals("delete")){
-
-            out.write("<p>Deleted ship "+ship+"</p>");
-            isDelete = true;
-          }
-          if(!isDelete){
             out.write("<p>Ship: "+ship+"</p>");
             out.write("<p>Model: "+model+"</p>");
             out.write("<p>Customer: "+cust+"</p>");
+          }
+          else if(operation.equals("delete")){
+
+            controller.deleteShip(Integer.parseInt(ship));
+            out.write("<p>Deleted ship "+ship+"</p>");
           }
         }
         catch(Exception ex){
