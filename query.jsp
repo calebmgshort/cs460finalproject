@@ -1,6 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<%@page import="java.util.*,java.lang.StringBuffer,
-    dbController.DatabaseController" %>
+<%@page import="
+java.util.*,
+java.util.AbstractMap.SimpleEntry,
+java.util.Map,
+javafx.util.Pair,
+dbController.DatabaseController
+"%>
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -73,7 +78,33 @@
         }
       }
       else if (query.equals("3")){
+        try{
+          Pair<Integer,Integer> MVP = controller.query3();
 
+          out.write("<p>Customer "+MVP.getKey()+" is our most valuable customer, having spent $"+MVP.getValue()+"</p>");
+          }
+        catch(Exception ex){
+          out.write("<p>"+"Ahh! SOrry this no work. =/"+"</p>");
+          out.write("<p>"+ex.toString()+"</p>");
+        }
+      }
+      else if (query.equals("4")){
+        try{
+          String username = request.getParameter("username");
+          String status = request.getParameter("status");
+
+          out.write("<p>Ships for "+username+" with status "+status+":</p>");
+
+          List<Integer> ships = controller.query4(username, status);
+
+          for (Integer ship : ships){
+            out.write("<p>Ship "+ship+"</p>");
+          }
+        }
+        catch(Exception ex){
+          out.write("<p>"+"Ahh! SOrry this no work. =/"+"</p>");
+          out.write("<p>"+ex.toString()+"</p>");
+        }
       }
 
 

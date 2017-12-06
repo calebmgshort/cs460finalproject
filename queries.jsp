@@ -89,7 +89,33 @@ dbController.DatabaseController
 				<input type="hidden" name="query" value="2">
 				<input type="submit" value="Get Incomplete Ships" />
 			</form>
-			<button>Get MVP Customer</button></br>
+
+			<h3>Query 3</h3>
+			<form action="query.jsp" method="post">
+				<input type="hidden" name="query" value="3">
+				<input type="submit" value="Get MVP Customer" />
+			</form>
+
+			<h3>Query 4</h3>
+			<form action="query.jsp" method="post" id="query4form" onsubmit="return validateQueryFour()">
+				<input type="hidden" name="query" value="4">
+				Username: <input type="text" name="username" id="username"></input>
+				<select name="status" multiple id="status" form="query4form">
+					<option selected disabled>Select status</option>
+					<option value="pending">Pending</option>
+					<option value="in progress">In Progress</option>
+					<option value="finished">Finished</option>
+					<option value="finished">All</option>
+				</select>
+				<input type="submit" value="Get Ships" />
+			</form>
+
+			<h3>Query 5</h3>
+			<form action="query.jsp" method="post">
+				<input type="hidden" name="query" value="5">
+				<input type="submit" value="Get Most Popular Models" />
+			</form>
+
 
     </div>
 
@@ -103,6 +129,18 @@ function validateQueryOne(){
 
 		if (document.getElementById("modelSelect").selectedIndex > 0){
 			return true;
+		}
+
+	return false;
+}
+
+function validateQueryOne(){
+
+		if (document.getElementById("status").selectedIndex > 0){
+			if (document.getElementById("username").value != ""){
+				return true;
+			}
+
 		}
 
 	return false;
