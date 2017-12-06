@@ -123,16 +123,17 @@ public class DatabaseController {
     statement_.executeUpdate(updateStatement);
 
     // Now insert the parts for that ship into PartToComplete
-    queryStatement = "(SELECT partNum, qty, price "
-        + "FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part USING (partNum)) "
+    queryStatement = "(SELECT partnum,qty,price "
+        + "FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part USING (partnum)) "
 			  + "UNION "
-			  + "(SELECT partNum, 1 as “qty”,price FROM hdcovello.RequiredPart WHERE isRequired=0)";
+			  + "(SELECT partnum,1 as \"qty\",price FROM hdcovello.Part WHERE isrequired=0)";
 	  answer = statement_.executeQuery(queryStatement);
 	  while(answer.next()){
-		  int partNum = answer.getInt("partNum ");
-		  int qty= answer.getInt("qty ");
-		  updateStatement = "INSERT INTO hdcovello.PartToComplete (shipnum,partnum,qtyleft) "
-				  + "VALUES (" + shipNum + "," + partNum + "," + qty + ")";
+		  int partNum = answer.getInt(1);
+		  int qty = answer.getInt(2);
+		  int price = answer.getInt(3);
+		  updateStatement = "INSERT INTO hdcovello.PartToComplete (shipnum,partnum,qtyleft,contractedprice) "
+				  + "VALUES (" + shipNum + "," + partNum + "," + qty + "," + price + ")";
 		  statement_.executeUpdate(updateStatement);
 	  }
 	  Commit();
