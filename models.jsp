@@ -36,7 +36,7 @@ dbController.DatabaseController
 			}
 
 			.column{
-				width: 33%;
+				width: 100%;
 				float: left;
 				border: 1px solid black;
 				height: 300px;
@@ -97,7 +97,7 @@ dbController.DatabaseController
 							</div>
 						  <input type="submit" value="Submit" />
 						</form>
-
+<!--
 				</div>
 				<div class="column">
 					<h3>Update</h3>
@@ -182,6 +182,7 @@ dbController.DatabaseController
 						<input type="submit" value="Submit" />
 					</form>
 				</div>
+			-->
 			</div>
 
     </div>

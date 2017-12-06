@@ -78,8 +78,9 @@ dbController.DatabaseController
       String part = request.getParameter("part");
 
       if (part != null){
-        out.write("buidl part");
+
         controller.updateShip(Integer.parseInt(id), Integer.parseInt(part));
+        out.write("Built part "+part+"!");
       }
 
 
