@@ -299,7 +299,7 @@ public class DatabaseController {
             + "join Customer using (custNum) "
             + "where username = '" + username + "'";
     }
-    else if(status.equals("inProgress")){
+    else if(status.equals("in progress")){
       query = "Select distinct shipNum as \"ORDERNUM\", modelName, afterMarkupCost as \"COST\"  from ShipContract "
       + "join PartToComplete p using (shipNum) "
       + "join DepartmentModel using (modelNum) "
