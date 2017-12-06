@@ -148,20 +148,30 @@ public class DatabaseController {
 
   public void updateShip(int shipNum, int partNum) throws SQLException{
 
+    // Get the price of the given part
     String queryStatement = "SELECT price FROM hdcovello.Part "
         + "WHERE partnum=" + partNum;
     ResultSet answer = statement_.executeQuery(queryStatement);
     answer.next();
     int price = answer.getInt(1);
 
+    // Update the current price for the given ship
     String updateStatement = "UPDATE hdcovello.ShipContract "
           + "SET afterMarkupCost = afterMarkupCost + " + price
     		  + " WHERE shipnum=" + shipNum;
     statement_.executeUpdate(updateStatement);
 
-    // TODO: the Update Ship also needs to decrement the quantity left,
-    // delete from PartToComplete if necessary, and change the status of the
-    // Ship if all parts are completed as a result.
+    // Decrement the quantity of the given part for that ship remaining
+    updateStatement = "UPDATE hdcovello.PartToComplete "
+          + "SET qtyleft = qtyleft - 1"
+    		  + " WHERE shipnum=" + shipNum + " AND partnum=" + partNum;
+    statement_.executeUpdate(updateStatement);
+
+    // Remove the given part for the given ship if it is less than or equal to 0
+    updateStatement = "DELETE FROM hdcovello.PartToComplete "
+          + " WHERE shipnum=" + shipNum + " AND partnum=" + partNum + " AND qtyleft<=0";
+    statement_.executeUpdate(updateStatement);
+
     Commit();
 
   }
