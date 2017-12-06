@@ -263,7 +263,7 @@ public class DatabaseController {
 			  "JOIN hdcovello.PartToComplete p USING (shipNum) WHERE EXISTS " +
 			  "(((SELECT partNum, qty FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.ShipContract USING (modelNum)) " +
 			  "UNION " +
-			  "(SELECT partNum, 1 as 'qty' FROM hdcovello.Part WHERE isRequired = 1)) " +
+			  "(SELECT partNum, 1 as \"qty\" FROM hdcovello.Part WHERE isRequired = 1)) " +
 			  "MINUS " +
 			  "(SELECT partNum, qtyLeft FROM hdcovello.PartToComplete JOIN hdcovello.ShipContract USING (shipNum))) " +
 			  "AND EXISTS (SELECT shipNum FROM hdcovello.PartToComplete WHERE p.qtyLeft > 0)";
