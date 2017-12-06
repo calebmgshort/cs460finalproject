@@ -126,7 +126,7 @@ public class DatabaseController {
     queryStatement = "(SELECT partnum,qty,price "
         + "FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part USING (partnum)) "
 			  + "UNION "
-			  + "(SELECT partnum,1 as \"qty\",price FROM hdcovello.Part WHERE isrequired=0)";
+			  + "(SELECT partnum,1 as \"qty\",price FROM hdcovello.Part WHERE isrequired=1)";
 	  answer = statement_.executeQuery(queryStatement);
 	  while(answer.next()){
 		  int partNum = answer.getInt(1);
@@ -292,16 +292,32 @@ public class DatabaseController {
   }
 
   public List<Integer> query4(String username, String status) throws SQLException{
-    // TODO: implement query 4
-    String query = "Select distinct sc.shipNum as 'ORDERNUM', modelName, afterMarkupCost as 'COST' "
-    + "from ShipContract sc "
-    + "join PartToComplete p on sc.shipNum = p.shipNum "
-    + "join DepartmentModel using (modelNum) "
-    + "join Customer using (custNum) "
-    + "where username = '" + username + "' and not exists ("
-	  + "select * from PartToComplete "
-	  + "join ShipContract using (shipNum) "
-	  + "where p.qtyLeft != 0 and sc.shipNum = shipNum)";
+    String query;
+    if(status.equals("all")){
+
+    }
+    else if(status.equals("inProgress")){
+
+    }
+    else if(status.equals("pending")){
+
+    }
+    else if(status.equals("complete")){
+      query = "Select distinct sc.shipNum as 'ORDERNUM', modelName, afterMarkupCost as 'COST' "
+      + "from ShipContract sc "
+      + "join PartToComplete p on sc.shipNum = p.shipNum "
+      + "join DepartmentModel using (modelNum) "
+      + "join Customer using (custNum) "
+      + "where username = '" + username + "' and not exists ("
+  	  + "select * from PartToComplete "
+  	  + "join ShipContract using (shipNum) "
+  	  + "where p.qtyLeft != 0 and sc.shipNum = shipNum)";
+    }
+    else{
+      return null;
+    }
+    ResultSet answer = statement_.executeQuery(query);
+
     return null;
   }
 
