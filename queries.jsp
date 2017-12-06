@@ -99,15 +99,16 @@ dbController.DatabaseController
 			<h3>Query 4</h3>
 			<form action="query.jsp" method="post" id="query4form" onsubmit="return validateQueryFour()">
 				<input type="hidden" name="query" value="4">
-				Username: <input type="text" name="username" id="username"></input>
-				<select name="status" multiple id="status" form="query4form">
+				Username: <input type="text" name="username" id="username"></input></br>
+				<select name="status" id="status" form="query4form">
 					<option selected disabled>Select status</option>
 					<option value="pending">Pending</option>
 					<option value="in progress">In Progress</option>
 					<option value="finished">Finished</option>
 					<option value="finished">All</option>
 				</select>
-				<input type="submit" value="Get Ships" />
+				</br>
+				<input type="submit" value="Get Ships for User" />
 			</form>
 
 			<h3>Query 5</h3>
@@ -134,7 +135,7 @@ function validateQueryOne(){
 	return false;
 }
 
-function validateQueryOne(){
+function validateQueryFour(){
 
 		if (document.getElementById("status").selectedIndex > 0){
 			if (document.getElementById("username").value != ""){

@@ -36,7 +36,7 @@ dbController.DatabaseController
 			}
 
 			.column{
-				width: 33%;
+				width: 49.5%;
 				float: left;
 				border: 1px solid black;
 				height: 300px;
@@ -75,7 +75,6 @@ dbController.DatabaseController
 						  Part Name: <input type="text" name="name" id="insertName"><br/>
 							Price: <input type="number" name="price" id="insertPrice"><br/>
 							Required: <input type="checkbox" name="required" id="insertRequired"><br/>
-							Quantity: <input type="number" name="quantity" id="insertQuantity"><br/>
 
 							</div>
 						  <input type="submit" value="Submit" />
@@ -117,7 +116,7 @@ dbController.DatabaseController
 						<input type="submit" value="Submit" />
 					</form>
 				</div>
-
+<!--
 				<div class="column">
 					<h3>Delete</h3>
 					<select name="id" id="delete" onchange="deleteSelect()" form="deleteForm">
@@ -147,6 +146,7 @@ dbController.DatabaseController
 						<input type="submit" value="Submit" />
 					</form>
 				</div>
+-->
 			</div>
 
     </div>
