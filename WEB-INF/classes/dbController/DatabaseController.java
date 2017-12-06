@@ -349,8 +349,45 @@ public class DatabaseController {
     return null;
   }
 
-  public void query5(){
-    // TODO: implement query5
+  public Query5ReturnResult query5() throws SQLException{
+    String query = "SELECT sub.modelNum, sub.modelName, totalSold, MIN(afterMarkupCost) as \"min\", "
+        + "AVG(afterMarkupCost) as \"avg\", MAX(afterMarkupCost) as \"max\" "
+        + "FROM (SELECT modelNum, modelName, COUNT(shipNum) AS totalSold "
+        + "FROM ShipContract "
+        + "JOIN DepartmentModel using (modelNum) "
+        + "WHERE rownum <= 3 "
+        + "GROUP BY modelNum, modelName "
+        + "ORDER BY totalSold DESC) sub"
+        + "JOIN ShipContract sc on (sc.modelNum = sub.modelNum) "
+        + "GROUP BY sub.totalSold, sub.modelNum, sub.modelName";
+
+    ResultSet answer = statement_.executeQuery(query);
+    int modelNum = answer.getInt("modelNum");
+    String modelName = answer.getString("modelName");
+    int totalSold = answer.getInt("totalSold");
+    float lowestPrice = answer.getFloat("min");
+    float averagePrice = answer.getFloat("avg");
+    float highestPrice = answer.getFloat("max");
+    return new Query5ReturnResult(modelNum, modelName, totalSold, lowestPrice,
+            averagePrice, highestPrice);
+  }
+
+  public class Query5ReturnResult{
+    public int modelNum;
+    public String modelName;
+    public int totalSold;
+    public float lowestPrice;
+    public float averagePrice;
+    public float highestPrice;
+    public Query5ReturnResult(int modelNum, String modelNme, int totalSold,
+              float lowestPrice, float averagePrice, float highestPrice){
+      this.modelNum = modelNum;
+      this.modelName = modelName;
+      this.totalSold = totalSold;
+      this.lowestPrice = lowestPrice;
+      this.averagePrice = averagePrice;
+      this.highestPrice = highestPrice;
+    }
   }
 
 }
