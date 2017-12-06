@@ -111,15 +111,15 @@ public class DatabaseController {
 
   public void insertShip(int shipNum, int modelNum, int custNum) throws SQLException{
     // Get the cost associated with the given modelnum
-    String queryStatement = "SELECT modelCost FROM hdcovello.DepartmentModel "
-        + "WHERE modelnum=" + modelNum;
-    ResultSet answer = statement_.executeQuery(queryStatement);
-    answer.next();
-    int cost = answer.getInt(1);
+    //String queryStatement = "SELECT modelCost FROM hdcovello.DepartmentModel "
+    //    + "WHERE modelnum=" + modelNum;
+    //ResultSet answer = statement_.executeQuery(queryStatement);
+    //answer.next();
+    //int cost = answer.getInt(1);
 
     // Insert the actual ship
     String updateStatement = "INSERT INTO hdcovello.ShipContract (shipnum,modelnum,custnum,aftermarkupcost) "
-        + "VALUES (" + shipNum + "," + modelNum + "," + custNum + "," + cost + ")";
+        + "VALUES (" + shipNum + "," + modelNum + "," + custNum + ",0)";
     statement_.executeUpdate(updateStatement);
 
     // Now insert the parts for that ship into PartToComplete
@@ -158,6 +158,10 @@ public class DatabaseController {
           + "SET afterMarkupCost = afterMarkupCost + " + price
     		  + " WHERE shipnum=" + shipNum;
     statement_.executeUpdate(updateStatement);
+
+    // TODO: the Update Ship also needs to decrement the quantity left,
+    // delete from PartToComplete if necessary, and change the status of the
+    // Ship if all parts are completed as a result.
     Commit();
 
   }
