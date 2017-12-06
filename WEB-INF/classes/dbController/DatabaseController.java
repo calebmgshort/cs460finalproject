@@ -64,7 +64,19 @@ public class DatabaseController {
    */
   protected String username = "calebmgshort";
 
-
+  /*---------------------------------------------------------------------
+   |  Method DatabaseController
+   |
+   |  Purpose:  The class constructor, which just initializes class variables
+   |
+   |  Pre-condition:  None
+   |
+   |  Post-condition: An instance of this class exists
+   |
+   |  Parameters: None
+   |
+   |  Returns:  None
+   *-------------------------------------------------------------------*/
   public DatabaseController() {
     // your cs login name
     username = "calebmgshort";
@@ -73,36 +85,20 @@ public class DatabaseController {
     connect_string_ = "jdbc:oracle:thin:@aloe.cs.arizona.edu:1521:oracle";
   }
 
-
-  /**
-   * Closes the DBMS connection that was opened by the open call.
-   */
-  public void Close() {
-    try {
-      statement_.close();
-      connection_.close();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    connection_ = null;
-  }
-
-
-  /**
-   * Commits all update operations made to the dbms.
-   * If auto-commit is on, which is by default, it is not necessary to call
-   * this method.
-   */
-  public void Commit() {
-    try {
-      if (connection_ != null && !connection_.isClosed())
-        connection_.commit();
-    } catch (SQLException e) {
-      System.err.println("Commit failed");
-      e.printStackTrace();
-    }
-  }
-
+  /*---------------------------------------------------------------------
+   |  Method Open
+   |
+   |  Purpose:  This method opens a connection to the database
+   |
+   |  Pre-condition:  There is no connection to the database
+   |
+   |  Post-condition: There is a connection to the database and a statement
+   |                  associated with that connection
+   |
+   |  Parameters: None
+   |
+   |  Returns:  A string indicating whether or not the connection was made successfuly
+   *-------------------------------------------------------------------*/
   public String Open() {
 	    try {
 	        Class.forName("oracle.jdbc.OracleDriver");
@@ -121,6 +117,53 @@ public class DatabaseController {
 	    }
   }
 
+   /*---------------------------------------------------------------------
+ |  Method Close
+ |
+ |  Purpose:  Closes the DBMS connection that was opened by the open call.
+ |
+ |  Pre-condition:  The connection to the database and statement_ have been set up
+ |
+ |  Post-condition: The connection to the database and statement_ are closed
+ |
+ |  Parameters: None
+ |
+ |  Returns:  None
+ *-------------------------------------------------------------------*/
+  public void Close() {
+    try {
+      statement_.close();
+      connection_.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    connection_ = null;
+  }
+
+   /*---------------------------------------------------------------------
+ |  Method Commit
+ |
+ |  Purpose:  Commits all update operations made to the dbms.
+ |            If auto-commit is on, which is by default, it is not necessary
+ |            to call this method.
+ |
+ |  Pre-condition:  None
+ |
+ |  Post-condition: The current changes in the database are commited
+ |
+ |  Parameters: None
+ |
+ |  Returns:  None
+ *-------------------------------------------------------------------*/
+  public void Commit() {
+    try {
+      if (connection_ != null && !connection_.isClosed())
+        connection_.commit();
+    } catch (SQLException e) {
+      System.err.println("Commit failed");
+      e.printStackTrace();
+    }
+  }
 
   public void insertModel(int modelNum, String deptName, String modelName,
         float cost, int[] luxuryParts) throws SQLException{
@@ -152,6 +195,13 @@ public class DatabaseController {
     statement_.executeUpdate(updateStatement);
 
     // Now insert the parts for that ship into PartToComplete
+    updateStatement = "INSERT INTO hdcovello.PartToComplete (shipnum,partnum,qtyleft,contractedprice) "
+          + "((SELECT " + shipNum + " as \"shipnum\",partnum,qty,price "
+          + "FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part USING (partnum)) "
+      	  + "UNION "
+      		+ "(SELECT " + shipNum + " as \"shipnum\",partnum,1 as \"qty\",price FROM hdcovello.Part WHERE isrequired=1))";
+    statement_.executeUpdate(updateStatement);
+    /*
     queryStatement = "(SELECT partnum,qty,price "
         + "FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part USING (partnum)) "
 			  + "UNION "
@@ -165,6 +215,7 @@ public class DatabaseController {
 				  + "VALUES (" + shipNum + "," + partNum + "," + qty + "," + price + ")";
 		  statement_.executeUpdate(updateStatement);
 	  }
+    */
 	  Commit();
   }
 
