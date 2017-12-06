@@ -196,10 +196,10 @@ public class DatabaseController {
 
     // Now insert the parts for that ship into PartToComplete
     updateStatement = "INSERT INTO hdcovello.PartToComplete (shipnum,partnum,qtyleft,contractedprice) "
-          + "((SELECT " + shipNum + " as \"shipnum\",partnum,qty,price "
+          + "((SELECT " + shipNum + ",partnum,qty,price "
           + "FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part USING (partnum)) "
       	  + "UNION "
-      		+ "(SELECT " + shipNum + " as \"shipnum\",partnum,1 as \"qty\",price FROM hdcovello.Part WHERE isrequired=1))";
+      		+ "(SELECT " + shipNum + ",partnum,1,price FROM hdcovello.Part WHERE isrequired=1))";
     statement_.executeUpdate(updateStatement);
     /*
     queryStatement = "(SELECT partnum,qty,price "
