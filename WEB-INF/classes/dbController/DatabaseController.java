@@ -195,27 +195,40 @@ public class DatabaseController {
     statement_.executeUpdate(updateStatement);
 
     // Now insert the parts for that ship into PartToComplete
+    /*
     updateStatement = "INSERT INTO hdcovello.PartToComplete (shipnum,partnum,qtyleft,contractedprice) "
           + "((SELECT " + shipNum + ",partnum,qty,price "
           + "FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part USING (partnum)) "
       	  + "UNION "
       		+ "(SELECT " + shipNum + ",partnum,1,price FROM hdcovello.Part WHERE isrequired=1))";
     statement_.executeUpdate(updateStatement);
-    /*
+    */
+
     queryStatement = "(SELECT partnum,qty,price "
         + "FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part USING (partnum)) "
 			  + "UNION "
 			  + "(SELECT partnum,1 as \"qty\",price FROM hdcovello.Part WHERE isrequired=1)";
 	  answer = statement_.executeQuery(queryStatement);
-	  while(answer.next()){
+    List<Integer> partNums = new ArrayList<Integer>();
+    List<Integer> qtys = new ArrayList<Integer>();
+    List<Integer> prices = new ArrayList<Integer>();
+    while(answer.next()){
 		  int partNum = answer.getInt(1);
 		  int qty = answer.getInt(2);
 		  int price = answer.getInt(3);
-		  updateStatement = "INSERT INTO hdcovello.PartToComplete (shipnum,partnum,qtyleft,contractedprice) "
+      partNums.add(new Integer(partNum));
+      qtys.add(new Integer(qty));
+      prices.add(new Integer(price));
+	  }
+    for(int i = 0; i < partNums.size(); i++){
+      int partNum = partNums.get(i).intValue();
+      int qty = qtys.get(i).intValue();
+      int price = prices.get(i).intValue();
+      updateStatement = "INSERT INTO hdcovello.PartToComplete (shipnum,partnum,qtyleft,contractedprice) "
 				  + "VALUES (" + shipNum + "," + partNum + "," + qty + "," + price + ")";
 		  statement_.executeUpdate(updateStatement);
-	  }
-    */
+    }
+
 	  Commit();
   }
 
@@ -261,9 +274,15 @@ public class DatabaseController {
     Commit();
   }
 
-  public void insertCustomer(int custNum, String firstName, String lastName) throws SQLException{
-    String updateStatement = "INSERT INTO hdcovello.Customer (custnum,firstname,lastname) "
-        + "VALUES (" + custNum + ",'" + firstName + "','" + lastName + "')";
+  public void insertCustomer(String username, String firstName, String lastName) throws SQLException{
+    // Get the customer number to used
+    String queryStatement = "SELECT Max(custnum) FROM hdcovello.Customer";
+    ResultSet answer = statement_.executeQuery(queryStatement);
+    answer.next();
+    int custNum = answer.getInt(1);
+    // Insert a customer
+    String updateStatement = "INSERT INTO hdcovello.Customer (custnum,username,firstname,lastname) "
+        + "VALUES (" + custNum + "'" + username + "','" + firstName + "','" + lastName + "')";
     statement_.executeUpdate(updateStatement);
     Commit();
   }
@@ -289,6 +308,19 @@ public class DatabaseController {
     while(answer.next()){
       int num = answer.getInt("partnum");
       String name = answer.getString("partname");
+      result.add(new Pair<Integer,String>(new Integer(num), name));
+    }
+    return result;
+  }
+
+  public List<Pair<Integer, String>> getCustomers() throws SQLException{
+    String queryStatement = "SELECT custnum, username "
+        + "FROM hdcovello.Customer";
+    ResultSet answer = statement_.executeQuery(queryStatement);
+    List<Pair<Integer, String>> result = new ArrayList<Pair<Integer, String>>();
+    while(answer.next()){
+      int num = answer.getInt("custnum");
+      String name = answer.getString("username");
       result.add(new Pair<Integer,String>(new Integer(num), name));
     }
     return result;
