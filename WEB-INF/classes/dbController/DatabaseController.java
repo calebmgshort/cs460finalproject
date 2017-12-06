@@ -140,7 +140,10 @@ public class DatabaseController {
   }
 
   public void deleteShip(int shipNum) throws SQLException{
-    String updateStatement = "DELETE FROM hdcovello.ShipContract "
+    String updateStatement = "DELETE FROM hdcovello.PartToComplete "
+    		  + "WHERE shipnum=" + shipNum;
+          statement_.executeUpdate(updateStatement);
+    updateStatement = "DELETE FROM hdcovello.ShipContract "
     		  + "WHERE shipnum=" + shipNum;
     statement_.executeUpdate(updateStatement);
     Commit();
