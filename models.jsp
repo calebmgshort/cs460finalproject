@@ -78,20 +78,23 @@ dbController.DatabaseController
 
 							<h3>
 							<select name="parts" multiple id="insertParts" form="insertForm">
-								<option value="9">fuzzy rearview mirror dice</option>
-  						  <option value="10">infinite improbability drive</option>
-  						  <option value="11">cosmic catalytic converter</option>
-  							<option value="12">wine bar</option>
-								<option value="13">eternal Christmas decor</option>
-  							<option value="14">faux fireplace with mantle</option>
-								<option value="15">teleporter</option>
-  							<option value="16">snow machine</option>
-								<option value="17">washing machine and dryer</option>
-  							<option value="18">grand piano</option>
-								<option value="19">petting zoo</option>
-  							<option value="20">helicopter blades</option>
-								<option value="21">greenhouse garden</option>
-  							<option value="22">laser cannon</option>
+								<%
+									try{
+										DatabaseController controller = new DatabaseController();
+							  		controller.Open();
+
+										List<Pair<Integer, String>> models = controller.getParts();
+
+										for (Pair<Integer, String> model : models){
+											out.write("<option value="+model.getKey()+">"+model.getValue()+"</option>");
+										}
+
+										controller.Close();
+									}
+									catch(Exception ex){
+
+									}
+								%>
 							</select>
 
 							</div>

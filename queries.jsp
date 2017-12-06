@@ -99,13 +99,13 @@ dbController.DatabaseController
 			<h3>Query 4</h3>
 			<form action="query.jsp" method="post" id="query4form" onsubmit="return validateQueryFour()">
 				<input type="hidden" name="query" value="4">
-				Username: <input type="text" name="username" id="username"></input></br>
+				Username: <input type="text" name="username" id="username"></br>
 				<select name="status" id="status" form="query4form">
 					<option selected disabled>Select status</option>
 					<option value="pending">Pending</option>
 					<option value="in progress">In Progress</option>
-					<option value="finished">Finished</option>
-					<option value="finished">All</option>
+					<option value="complete">Finished</option>
+					<option value="all">All</option>
 				</select>
 				</br>
 				<input type="submit" value="Get Ships for User" />
