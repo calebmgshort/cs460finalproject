@@ -346,7 +346,7 @@ public class DatabaseController {
       result.add(new Integer(shipNum));
     }
 
-    return null;
+    return result;
   }
 
   public void query5(){
