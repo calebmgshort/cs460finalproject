@@ -118,8 +118,8 @@ public class DatabaseController {
     int cost = answer.getInt(1);
 
     // Insert the actual ship
-    String updateStatement = "INSERT INTO hdcovello.ShipContract (shipnum,modelnum,custnum,status,totalCost) "
-        + "VALUES (" + shipNum + "," + modelNum + "," + custNum + ",'approved'," + cost + ")";
+    String updateStatement = "INSERT INTO hdcovello.ShipContract (shipnum,modelnum,custnum,aftermarkupcost) "
+        + "VALUES (" + shipNum + "," + modelNum + "," + custNum + "," + cost + ")";
     statement_.executeUpdate(updateStatement);
 
     // Now insert the parts for that ship into PartToComplete
