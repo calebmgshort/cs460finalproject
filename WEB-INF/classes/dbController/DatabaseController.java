@@ -123,11 +123,11 @@ public class DatabaseController {
     statement_.executeUpdate(updateStatement);
 
     // Now insert the parts for that ship into PartToComplete
-    queryStatement = "(SELECT partnum,qty,price "
+    String queryStatement = "(SELECT partnum,qty,price "
         + "FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part USING (partnum)) "
 			  + "UNION "
 			  + "(SELECT partnum,1 as \"qty\",price FROM hdcovello.Part WHERE isrequired=0)";
-	  answer = statement_.executeQuery(queryStatement);
+	  ResultSet answer = statement_.executeQuery(queryStatement);
 	  while(answer.next()){
 		  int partNum = answer.getInt(1);
 		  int qty = answer.getInt(2);
