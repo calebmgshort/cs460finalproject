@@ -294,48 +294,47 @@ public class DatabaseController {
   public List<Integer> query4(String username, String status) throws SQLException{
     String query;
     if(status.equals("all")){
-      query = "select distinct shipNum as \"ORDERNUM\", modelName, afterMarkupCost as \"COST\" from ShipContract "
-            + "join DepartmentModel using (modelNum) "
-            + "join Customer using (custNum) "
+      query = "select distinct shipNum as \"ORDERNUM\", modelName, afterMarkupCost as \"COST\" from hdcovello.ShipContract "
+            + "join hdcovello.DepartmentModel using (modelNum) "
+            + "join hdcovello.Customer using (custNum) "
             + "where username = '" + username + "'";
     }
     else if(status.equals("in progress")){
-      query = "Select distinct shipNum as \"ORDERNUM\", modelName, afterMarkupCost as \"COST\"  from ShipContract "
-      + "join PartToComplete p using (shipNum) "
-      + "join DepartmentModel using (modelNum) "
-      + "join Customer using (custNum) "
-      + "where username = '" + username + "' and exists "
-      + "(((select partNum, qty from LuxuryPartOfModel join ShipContract using (modelNum)) "
-      + "union "
-      + "(select partNum, 1 as \"qty\" from Part where isRequired = 1)) "
-      + "minus "
-      + "(select partNum, qtyLeft from PartToComplete join ShipContract using (shipNum))) "
-      + "and exists (select shipNum from PartToComplete where p.qtyLeft > 0)";
-
+      query = "Select distinct shipNum as \"ORDERNUM\", modelName, afterMarkupCost as \"COST\"  from hdcovello.ShipContract "
+            + "join hdcovello.PartToComplete p using (shipNum) "
+            + "join hdcovello.DepartmentModel using (modelNum) "
+            + "join hdcovello.Customer using (custNum) "
+            + "where username = '" + username + "' and exists "
+            + "(((select partNum, qty from hdcovello.LuxuryPartOfModel join hdcovello.ShipContract using (modelNum)) "
+            + "union "
+            + "(select partNum, 1 as \"qty\" from hdcovello.Part where isRequired = 1)) "
+            + "minus "
+            + "(select partNum, qtyLeft from hdcovello.PartToComplete join hdcovello.ShipContract using (shipNum))) "
+            + "and exists (select shipNum from hdcovello.PartToComplete where p.qtyLeft > 0)";
     }
     else if(status.equals("pending")){
-      query = "Select distinct shipNum as \"ORDERNUM\", modelName, afterMarkupCost as \"COST\" from ShipContract "
-            + "join PartToComplete p using (shipNum) "
-            + "join DepartmentModel using (modelNum) "
-            + "join Customer using (custNum) "
+      query = "Select distinct shipNum as \"ORDERNUM\", modelName, afterMarkupCost as \"COST\" from hdcovello.ShipContract "
+            + "join hdcovello.PartToComplete p using (shipNum) "
+            + "join hdcovello.DepartmentModel using (modelNum) "
+            + "join hdcovello.Customer using (custNum) "
             + "where username = '" + username + "' and not exists "
-            + "(((select partNum, qty from LuxuryPartOfModel join ShipContract using (modelNum)) "
+            + "(((select partNum, qty from hdcovello.LuxuryPartOfModel join hdcovello.ShipContract using (modelNum)) "
             + "union "
-            + "(select partNum, 1 as \"qty\" from Part where isRequired = 1)) "
+            + "(select partNum, 1 as \"qty\" from hdcovello.Part where isRequired = 1)) "
             + "minus "
-            + "(select partNum, qtyLeft from PartToComplete join ShipContract using (shipNum)))";
+            + "(select partNum, qtyLeft from hdcovello.PartToComplete join hdcovello.ShipContract using (shipNum)))";
 
     }
     else if(status.equals("complete")){
       query = "Select distinct sc.shipNum as \"ORDERNUM\", modelName, afterMarkupCost as \"COST\" "
-      + "from ShipContract sc "
-      + "join PartToComplete p on sc.shipNum = p.shipNum "
-      + "join DepartmentModel using (modelNum) "
-      + "join Customer using (custNum) "
-      + "where username = '" + username + "' and not exists ("
-  	  + "select * from PartToComplete "
-  	  + "join ShipContract using (shipNum) "
-  	  + "where p.qtyLeft != 0 and sc.shipNum = shipNum)";
+            + "from hdcovello.ShipContract sc "
+            + "join hdcovello.PartToComplete p on sc.shipNum = p.shipNum "
+            + "join hdcovello.DepartmentModel using (modelNum) "
+            + "join hdcovello.Customer using (custNum) "
+            + "where username = '" + username + "' and not exists ("
+  	        + "select * from hdcovello.PartToComplete "
+  	        + "join hdcovello.ShipContract using (shipNum) "
+  	        + "where p.qtyLeft != 0 and sc.shipNum = shipNum)";
     }
     else{
       return null;
