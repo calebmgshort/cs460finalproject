@@ -72,7 +72,7 @@ dbController.DatabaseController
 							<input type="hidden" name="table" value="Ship">
 							Ship ID: <input type="number" min="0" name="id" id="insertId"><br/>
 						  Customer ID: <input type="number" min="0" name="custNum" id="insertCustNum"><br/>
-
+							Model:
 							<select name="modelNum" id="insertModelNum" form="insertForm">
 							  <option selected disabled>Select model to order</option>
 								<%
@@ -95,6 +95,7 @@ dbController.DatabaseController
 							</select>
 							<br/>
 							</div>
+							<br/>
 						  <input type="submit" value="Submit" />
 						</form>
 
@@ -107,13 +108,13 @@ dbController.DatabaseController
 							try{
 								DatabaseController controller = new DatabaseController();
 					  		controller.Open();
-/*
-								List<Pair<Integer, String>> models = controller.getShips();
 
-								for (Pair<Integer, String> model : models){
-									out.write("<option value="+model.getKey()+">"+model.getValue()+"</option>");
+								List<Integer> ships = controller.getShips();
+
+								for (Integer ship : ships){
+									out.write("<option value="+ship+">"+ship+"</option>");
 								}
-*/
+
 								controller.Close();
 							}
 							catch(Exception ex){
@@ -122,17 +123,10 @@ dbController.DatabaseController
 						%>
 					</select>
 					<br/><br/>
-					<form action="crud.jsp" method="post" onsubmit="return validateUpdate()" id="updateForm">
+					<form action="ship.jsp" method="post" onsubmit="return validateUpdate()" id="updateForm">
 						<input type="hidden" name="operation" value="update">
 						<input type="hidden" name="table" value="Ship">
-						<div class="data">
-
-							Price: <input type="text" name="price" id="updatePrice"><br/>
-							Quantity: <input type="number" name="quantity" id="updateQuantity"><br/>
-
-						</div>
-						<br/><br/>
-						<input type="submit" value="Submit" />
+						<input type="submit" value="Go" />
 					</form>
 				</div>
 
@@ -144,13 +138,13 @@ dbController.DatabaseController
 							try{
 								DatabaseController controller = new DatabaseController();
 					  		controller.Open();
-/*
-								List<Pair<Integer, String>> models = controller.getShip();
 
-								for (Pair<Integer, String> model : models){
-									out.write("<option value="+model.getKey()+">"+model.getValue()+"</option>");
+								List<Integer> ships = controller.getShips();
+
+								for (Integer ship : ships){
+									out.write("<option value="+ship+">"+ship+"</option>");
 								}
-*/
+
 								controller.Close();
 							}
 							catch(Exception ex){
@@ -159,7 +153,7 @@ dbController.DatabaseController
 						%>
 					</select>
 					<br/><br/>
-					<form action="crud.jsp" method="post" onsubmit="return validateUpdate()" id="deleteForm">
+					<form action="crud.jsp" method="post" onsubmit="return validateDelete()" id="deleteForm">
 						<input type="hidden" name="operation" value="delete">
 						<input type="hidden" name="table" value="Ship">
 						<input type="submit" value="Submit" />
@@ -191,8 +185,8 @@ function CheckLuxuryCount(select){
 
 function validateInsert(){
 	if (document.getElementById("insertCustNum").value != ""){
-		if (document.getElementById("insertModelNum").value != ""){
-			if (document.getElementById("insertID").value > "0"){
+		if (document.getElementById("insertModelNum").selectedIndex > 0){
+			if (document.getElementById("insertId").value > 0){
 				return true;
 			}
 		}
