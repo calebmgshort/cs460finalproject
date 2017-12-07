@@ -479,21 +479,23 @@ public class DatabaseController {
     String query = "SELECT sub.modelNum, sub.modelName, totalSold, MIN(afterMarkupCost) as \"min\", "
         + "AVG(afterMarkupCost) as \"avg\", MAX(afterMarkupCost) as \"max\" "
         + "FROM (SELECT modelNum, modelName, COUNT(shipNum) AS totalSold "
-        + "FROM ShipContract "
-        + "JOIN DepartmentModel using (modelNum) "
+        + "FROM hdcovello.ShipContract "
+        + "JOIN hdcovello.DepartmentModel using (modelNum) "
         + "WHERE rownum <= 3 "
         + "GROUP BY modelNum, modelName "
         + "ORDER BY totalSold DESC) sub"
-        + "JOIN ShipContract sc on (sc.modelNum = sub.modelNum) "
+        + "JOIN hdcovello.ShipContract sc on (sc.modelNum = sub.modelNum) "
         + "GROUP BY sub.totalSold, sub.modelNum, sub.modelName";
 
     ResultSet answer = statement_.executeQuery(query);
-    int modelNum = answer.getInt("modelNum");
-    String modelName = answer.getString("modelName");
-    int totalSold = answer.getInt("totalSold");
-    float lowestPrice = answer.getFloat("min");
-    float averagePrice = answer.getFloat("avg");
-    float highestPrice = answer.getFloat("max");
+    //while(answer.next()){
+      int modelNum = answer.getInt("modelNum");
+      String modelName = answer.getString("modelName");
+      int totalSold = answer.getInt("totalSold");
+      float lowestPrice = answer.getFloat("min");
+      float averagePrice = answer.getFloat("avg");
+      float highestPrice = answer.getFloat("max");
+    //}
     return new Query5ReturnResult(modelNum, modelName, totalSold, lowestPrice,
             averagePrice, highestPrice);
   }
