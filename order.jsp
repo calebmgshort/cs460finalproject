@@ -46,9 +46,6 @@ dbController.DatabaseController
 				text-align: center;
 			}
 		</style>
-	</head>
-
-	<body>
 
 	<%
 		request.setCharacterEncoding("utf-8");
@@ -65,22 +62,39 @@ dbController.DatabaseController
 		}
 
 		String type = request.getParameter("type");
+		String username = request.getParameter("username");
 
 		boolean loggedIn = false;
 
 		try{
 			if (type.equals("login")){
-				String username = controller.login(request.getParameter("username"));
+				username = controller.login(username);
 
 				if (username != null){
-
+					loggedIn = true;
 				}
 			}
 			else if (type.equals("register")){
 				String first = request.getParameter("first");
 				String last = request.getParameter("last");
-				String username = request.getParameter("")
+
+				username = controller.CreateCustomer(first, last, username);
+
+				if (username != null){
+					loggedIn = true;
+				}
 			}
+		}
+		catch (Exception ex){
+
+		}
+
+		if (loggedIn){
+			out.write("</head></body>");
+			out.write("<input type=\"hidden\" name=\"username\" form=\"insertForm\" value=\""+username+"\">");
+		}
+		else{
+			out.write();
 		}
 
 	%>
