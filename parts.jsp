@@ -1,3 +1,10 @@
+<!--
+Author: Michael Uebele
+
+User page for managing parts.
+Supports adding new parts and updating the prices of existing parts.
+-->
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="
 java.util.*,
@@ -64,14 +71,14 @@ dbController.DatabaseController
 
 			<div class="row">
 				<div class="column">
-					<h3>Insert</h3>
+					<h3>Create New Part</h3>
 
 
 						<form action="crud.jsp" method="post" onsubmit="return validateInsert()" id="insertForm">
 							<div class="data">
 							<input type="hidden" name="operation" value="insert">
 							<input type="hidden" name="table" value="Part">
-							ID Number: <input type="number" min="0" name="id" id="insertId"><br/>
+							ID Number: <input type="number" min="1" name="id" id="insertId"><br/>
 						  Part Name: <input type="text" name="name" id="insertName"><br/>
 							Price: <input type="number" name="price" id="insertPrice"><br/>
 							Required: <input type="checkbox" name="required" id="insertRequired"><br/>
@@ -82,7 +89,7 @@ dbController.DatabaseController
 
 				</div>
 				<div class="column">
-					<h3>Update</h3>
+					<h3>Update Existing Part</h3>
 					<select name="id" id="update" onchange="UpdateSelect()" form="updateForm">
 					  <option selected disabled>Select part to update</option>
 						<%
@@ -109,10 +116,10 @@ dbController.DatabaseController
 						<input type="hidden" name="table" value="Part">
 						<div class="data">
 
-							Price: <input type="number" name="price" id="updatePrice"><br/>
+							New price: <input type="number" name="price" id="updatePrice"><br/>
 
 						</div>
-						<br/><br/>
+						<br/>
 						<input type="submit" value="Submit" />
 					</form>
 				</div>
@@ -162,10 +169,9 @@ dbController.DatabaseController
 function validateInsert(){
 	if (document.getElementById("insertName").value != ""){
 		if (document.getElementById("insertPrice").value != ""){
-			if (document.getElementById("insertQuantity").value != ""){
-				if (document.getElementById("insertID").value > "0"){
-					return true;
-				}
+			if (document.getElementById("insertId").value != ""){
+				return true;
+
 			}
 		}
 	}

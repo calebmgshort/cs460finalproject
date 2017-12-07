@@ -1,3 +1,10 @@
+<!--
+Author: Michael Uebele
+
+Edit page for a specific ship.
+Allows user to build the parts of a given ship.
+-->
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="
 java.util.*,

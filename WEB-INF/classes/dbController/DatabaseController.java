@@ -411,7 +411,7 @@ public class DatabaseController {
       custNum = 1;
     // Insert a customer
     String updateStatement = "INSERT INTO hdcovello.Customer (custnum,username,firstname,lastname) "
-        + "VALUES (" + custNum + "'" + username + "','" + firstName + "','" + lastName + "')";
+        + "VALUES (" + custNum + ",'" + username + "','" + firstName + "','" + lastName + "')";
     statement_.executeUpdate(updateStatement);
     Commit();
   }
@@ -693,41 +693,37 @@ public class DatabaseController {
             + "where username = '" + username + "'";
     }
     else if(status.equals("in progress")){
-      query = "Select distinct shipNum as \"ORDERNUM\", modelName, afterMarkupCost as \"COST\"  from hdcovello.ShipContract "
-            + "join hdcovello.PartToComplete p using (shipNum) "
+      query = "Select distinct shipNum as \"ORDERNUM\", modelName, afterMarkupCost as \"COST\"  from hdcovello.ShipContract sc "
             + "join hdcovello.DepartmentModel using (modelNum) "
             + "join hdcovello.Customer using (custNum) "
             + "where username = '" + username + "' and exists "
-            + "(((select partNum, qty from hdcovello.LuxuryPartOfModel join hdcovello.ShipContract using (modelNum)) "
+            + "(((select partNum, qty from hdcovello.LuxuryPartOfModel join hdcovello.ShipContract using (modelNum) where sc.shipNum = shipNum) "
             + "union "
             + "(select partNum, 1 as \"qty\" from hdcovello.Part where isRequired = 1)) "
             + "minus "
-            + "(select partNum, qtyLeft from hdcovello.PartToComplete join hdcovello.ShipContract using (shipNum))) "
-            + "and exists (select shipNum from hdcovello.PartToComplete where p.qtyLeft > 0)";
+            + "(select partNum, qtyLeft from hdcovello.PartToComplete join hdcovello.ShipContract using (shipNum) where sc.shipNum = shipNum)) "
+            + "and exists (select * from hdcovello.PartToComplete where qtyLeft > 0 and sc.shipNum = shipNum)";
     }
     else if(status.equals("pending")){
-      query = "Select distinct shipNum as \"ORDERNUM\", modelName, afterMarkupCost as \"COST\" from hdcovello.ShipContract "
-            + "join hdcovello.PartToComplete p using (shipNum) "
-            + "join hdcovello.DepartmentModel using (modelNum) "
-            + "join hdcovello.Customer using (custNum) "
-            + "where username = '" + username + "' and not exists "
-            + "(((select partNum, qty from hdcovello.LuxuryPartOfModel join hdcovello.ShipContract using (modelNum)) "
-            + "union "
-            + "(select partNum, 1 as \"qty\" from hdcovello.Part where isRequired = 1)) "
-            + "minus "
-            + "(select partNum, qtyLeft from hdcovello.PartToComplete join hdcovello.ShipContract using (shipNum)))";
-
+      query ="Select distinct sc.shipNum as \"ORDERNUM\", modelName, afterMarkupCost as \"COST\" from hdcovello.ShipContract sc "
+    + "join hdcovello.DepartmentModel using (modelNum) "
+    + "join hdcovello.Customer using (custNum) "
+    + "where username = '" + username + "' and not exists "
+    + "(((select partNum, qty from hdcovello.LuxuryPartOfModel join hdcovello.ShipContract using (modelnum) where sc.shipNum = shipNum) "
+    + "union "
+    + "(select partNum, 1 as \"qty\" from hdcovello.Part where isRequired = 1)) "
+    + "minus "
+    + "(select partNum, qtyLeft from hdcovello.PartToComplete join hdcovello.ShipContract using (shipnum) where sc.shipNum = shipNum))";
     }
     else if(status.equals("complete")){
       query = "Select distinct sc.shipNum as \"ORDERNUM\", modelName, afterMarkupCost as \"COST\" "
             + "from hdcovello.ShipContract sc "
-            + "join hdcovello.PartToComplete p on sc.shipNum = p.shipNum "
             + "join hdcovello.DepartmentModel using (modelNum) "
             + "join hdcovello.Customer using (custNum) "
             + "where username = '" + username + "' and not exists ("
   	        + "select * from hdcovello.PartToComplete "
   	        + "join hdcovello.ShipContract using (shipNum) "
-  	        + "where p.qtyLeft != 0 and sc.shipNum = shipNum)";
+  	        + "where qtyLeft != 0 and sc.shipNum = shipNum)";
     }
     else{
       return null;
@@ -763,15 +759,19 @@ public class DatabaseController {
         + "FROM (SELECT modelNum, modelName, COUNT(shipNum) AS totalSold "
         + "FROM hdcovello.ShipContract "
         + "JOIN hdcovello.DepartmentModel using (modelNum) "
-        + "WHERE rownum <= 3 "
-        + "GROUP BY modelNum, modelName "
-        + "ORDER BY totalSold DESC) sub "
+        + "GROUP BY modelNum, modelName) sub "
         + "JOIN hdcovello.ShipContract sc on (sc.modelNum = sub.modelNum) "
-        + "GROUP BY sub.totalSold, sub.modelNum, sub.modelName";
+        + "GROUP BY sub.totalSold, sub.modelNum, sub.modelName "
+        + "ORDER BY sub.totalSold DESC";
+
+
+
 
     ResultSet answer = statement_.executeQuery(query);
     List<Query5ReturnResult> result = new ArrayList<Query5ReturnResult>();
-    while(answer.next()){
+    int i = 0;
+    while(answer.next() && i < 3){
+      i++;
       int modelNum = answer.getInt("modelNum");
       String modelName = answer.getString("modelName");
       int totalSold = answer.getInt("totalSold");
@@ -817,7 +817,7 @@ public class DatabaseController {
     public float lowestPrice;
     public float averagePrice;
     public float highestPrice;
-    public Query5ReturnResult(int modelNum, String modelNme, int totalSold,
+    public Query5ReturnResult(int modelNum, String modelName, int totalSold,
               float lowestPrice, float averagePrice, float highestPrice){
       this.modelNum = modelNum;
       this.modelName = modelName;

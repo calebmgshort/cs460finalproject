@@ -1,3 +1,10 @@
+<!--
+Author: Michael Uebele
+
+POST page for queries.
+Performs query and displays result to user.
+-->
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="
 java.util.*,
@@ -56,7 +63,7 @@ dbController.DatabaseController.Query5ReturnResult
 
           int totalCost = controller.query1(idNum);
 
-          out.write("<p>Total cost of parts for model : "+totalCost+"</p>");
+          out.write("<p>Total cost of parts for model "+id+": $"+totalCost+"</p>");
           }
         catch(Exception ex){
           out.write("<p>"+"Ahh! SOrry this no work. =/"+"</p>");
@@ -109,14 +116,20 @@ dbController.DatabaseController.Query5ReturnResult
       }
 			else if (query.equals("5")){
 				try{
-          Query5ReturnResult result = controller.query5();
+          List<Query5ReturnResult> results = controller.query5();
+					out.write("<h2>The top 3 models sold are:</h2>");
+					int i = 0;
+					for (Query5ReturnResult result : results){
+						i++;
+						out.write("<h3><u>"+i+"</u></h3>");
+						out.write("<p>Number: "+result.modelNum+"</p>");
+						out.write("<p>Name: "+result.modelName+"</p>");
+						out.write("<p>Total Sold: "+result.totalSold+"</p>");
+						out.write("<p>Lowest Price Sold: "+result.lowestPrice+"</p>");
+						out.write("<p>Average Price Sold: "+result.averagePrice+"</p>");
+						out.write("<p>Highest Price Sold: "+result.highestPrice+"</p>");
+					}
 
-          out.write("<p>Number: "+result.modelNum+"</p>");
-					out.write("<p>Name: "+result.modelName+"</p>");
-					out.write("<p>Total Sold: "+result.totalSold+"</p>");
-					out.write("<p>Lowest Price: "+result.lowestPrice+"</p>");
-					out.write("<p>Average Price: "+result.averagePrice+"</p>");
-					out.write("<p>Highest Price: "+result.highestPrice+"</p>");
         }
         catch(Exception ex){
           out.write("<p>"+"Ahh! SOrry this no work. =/"+"</p>");

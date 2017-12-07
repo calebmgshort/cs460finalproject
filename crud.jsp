@@ -1,3 +1,10 @@
+<!--
+Author: Michael Uebele
+
+This page receieves HTTP Post requests for most CRUD operations for the company.
+Creating, updating, and deleting of models, parts, ships, and customers is all done here.
+-->
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="java.util.*,java.lang.StringBuffer,
     dbController.DatabaseController" %>
@@ -154,7 +161,7 @@
         try{
           if(operation.equals("insert")){
             controller.insertShip(Integer.parseInt(ship), Integer.parseInt(model), Integer.parseInt(cust));
-            out.write("<p>Inserted new ship:</p>");
+            out.write("<p>Created new ship order:</p>");
             out.write("<p>Ship: "+ship+"</p>");
             out.write("<p>Model: "+model+"</p>");
             out.write("<p>Customer: "+cust+"</p>");
@@ -162,13 +169,32 @@
           else if(operation.equals("delete")){
 
             controller.deleteShip(Integer.parseInt(ship));
-            out.write("<p>Deleted ship "+ship+"</p>");
+            out.write("<p>Scrapped ship "+ship+"</p>");
           }
         }
         catch(Exception ex){
-          out.write("<p>"+"ERROR: Unable to create ship order. Ship ID "+idNum+" already exists. Please select a different Ship ID number and try again."+"</p>");
+          out.write("<p>"+"ERROR: Unable to create ship order. Ship ID "+ship+" already exists. Please select a different Ship ID number and try again."+"</p>");
 
           //out.write("<p>"+ex.StackTrace)
+        }
+      }
+      else if (table.equals("customer")){
+        String username = request.getParameter("username");
+        String first = request.getParameter("first");
+        String last = request.getParameter("last");
+
+        try{
+          if (operation.equals("insert")){
+            controller.insertCustomer(username,first,last);
+            out.write("<p>Created new customer:</p>");
+            out.write("<p>Username: "+username+"</p>");
+            out.write("<p>First name: "+first+"</p>");
+            out.write("<p>Last name: "+last+"</p>");
+          }
+        }
+        catch(Exception ex){
+          out.write("<p>"+"ERROR: Unable to create customer. Username "+username+" already exists. Please select a different username and try again."+"</p>");
+          out.write(ex.toString());
         }
       }
 

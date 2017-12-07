@@ -1,3 +1,10 @@
+<!--
+Author: Michael Uebele
+
+User page for managing ships.
+Supports adding new ship contracts, updating the build process of existing ships, and scrapping existing ships.
+-->
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="
 java.util.*,
@@ -71,7 +78,28 @@ dbController.DatabaseController
 							<input type="hidden" name="operation" value="insert">
 							<input type="hidden" name="table" value="Ship">
 							Ship ID: <input type="number" min="0" name="id" id="insertId"><br/>
-						  Customer ID: <input type="number" min="0" name="custNum" id="insertCustNum"><br/>
+							Customer:
+							<select name="custNum" id="insertCustNum" form="insertForm">
+							  <option selected disabled>Select customer</option>
+								<%
+									try{
+										DatabaseController controller = new DatabaseController();
+							  		controller.Open();
+
+										List<Pair<Integer, String>> models = controller.getCustomers();
+
+										for (Pair<Integer, String> model : models){
+											out.write("<option value="+model.getKey()+">"+model.getValue()+"</option>");
+										}
+
+										controller.Close();
+									}
+									catch(Exception ex){
+
+									}
+								%>
+							</select>
+						</br>
 							Model:
 							<select name="modelNum" id="insertModelNum" form="insertForm">
 							  <option selected disabled>Select model to order</option>
@@ -131,7 +159,7 @@ dbController.DatabaseController
 				</div>
 
 				<div class="column">
-					<h3>Delete</h3>
+					<h3>Scrap Ship</h3>
 					<select name="id" id="delete" onchange="deleteSelect()" form="deleteForm">
 					  <option selected disabled>Select ship to scrap</option>
 						<%
@@ -184,7 +212,7 @@ function CheckLuxuryCount(select){
 }
 
 function validateInsert(){
-	if (document.getElementById("insertCustNum").value != ""){
+	if (document.getElementById("insertCustNum").selectedIndex > 0){
 		if (document.getElementById("insertModelNum").selectedIndex > 0){
 			if (document.getElementById("insertId").value > 0){
 				return true;

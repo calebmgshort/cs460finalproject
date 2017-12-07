@@ -1,3 +1,10 @@
+<!--
+Author: Michael Uebele
+
+User page for managing models.
+Supports adding new models.
+-->
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <%@page import="
 java.util.*,
@@ -64,7 +71,7 @@ dbController.DatabaseController
 
 			<div class="row">
 				<div class="column">
-					<h3>Insert</h3>
+					<h3>Create New Model</h3>
 
 
 						<form action="crud.jsp" method="post" onsubmit="return validateInsert()" id="insertForm">
@@ -83,7 +90,7 @@ dbController.DatabaseController
 										DatabaseController controller = new DatabaseController();
 							  		controller.Open();
 
-										List<Pair<Integer, String>> models = controller.getParts();
+										List<Pair<Integer, String>> models = controller.getLuxuryParts();
 
 										for (Pair<Integer, String> model : models){
 											out.write("<option value="+model.getKey()+">"+model.getValue()+"</option>");
