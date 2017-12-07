@@ -4,7 +4,8 @@ java.util.*,
 java.util.AbstractMap.SimpleEntry,
 java.util.Map,
 javafx.util.Pair,
-dbController.DatabaseController
+dbController.DatabaseController,
+dbController.DatabaseController.Query5ReturnResult
 "%>
 <html>
 	<head>
@@ -40,10 +41,10 @@ dbController.DatabaseController
   		// connect to backend database server via the databasecontroller, which
   		// is a wrapper class providing necessary methods for this particular
   		// application
-  		String result = controller.Open();
+  		String message = controller.Open();
 
-      if (!result.equals("success")){
-        out.write(result);
+      if (!message.equals("success")){
+        out.write(message);
       }
 
       String query = request.getParameter("query");
@@ -106,6 +107,22 @@ dbController.DatabaseController
           out.write("<p>"+ex.toString()+"</p>");
         }
       }
+			else if (query.equals("5")){
+				try{
+          Query5ReturnResult result = controller.query5();
+
+          out.write("<p>Number: "+result.modelNum+"</p>");
+					out.write("<p>Name: "+result.modelName+"</p>");
+					out.write("<p>Total Sold: "+result.totalSold+"</p>");
+					out.write("<p>Lowest Price: "+result.lowestPrice+"</p>");
+					out.write("<p>Average Price: "+result.averagePrice+"</p>");
+					out.write("<p>Highest Price: "+result.highestPrice+"</p>");
+        }
+        catch(Exception ex){
+          out.write("<p>"+"Ahh! SOrry this no work. =/"+"</p>");
+          out.write("<p>"+ex.toString()+"</p>");
+        }
+			}
 
 
   		out.write("<hr/>");

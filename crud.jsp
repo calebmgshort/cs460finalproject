@@ -90,9 +90,8 @@
             }
           }
           catch(Exception ex){
-            out.write("<p>"+"Ahh! SOrry this no work. =/"+"</p>");
-            out.write("<p>"+ex.toString()+"</p>");
-            out.write("<p>"+"</p>");
+            out.write("<p>"+"ERROR: Unable to create model. Model ID "+idNum+" already exists. Please select a different Model ID number and try again."+"</p>");
+
             //out.write("<p>"+ex.StackTrace)
           }
       }
@@ -140,9 +139,8 @@
           }
         }
         catch(Exception ex){
-          out.write("<p>"+"Ahh! SOrry this no work. =/"+"</p>");
-          out.write("<p>"+ex.toString()+"</p>");
-          out.write("<p>"+"</p>");
+          out.write("<p>"+"ERROR: Unable to create part. Part ID "+idNum+" already exists. Please select a different Part ID number and try again."+"</p>");
+
           //out.write("<p>"+ex.StackTrace)
         }
       }
@@ -168,9 +166,8 @@
           }
         }
         catch(Exception ex){
-          out.write("<p>"+"Ahh! SOrry this no work. =/"+"</p>");
-          out.write("<p>"+ex.toString()+"</p>");
-          out.write("<p>"+"</p>");
+          out.write("<p>"+"ERROR: Unable to create ship order. Ship ID "+idNum+" already exists. Please select a different Ship ID number and try again."+"</p>");
+
           //out.write("<p>"+ex.StackTrace)
         }
       }
