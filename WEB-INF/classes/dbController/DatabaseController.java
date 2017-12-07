@@ -205,8 +205,8 @@ public class DatabaseController {
     */
 
     queryStatement = "(SELECT partnum,qty,price "
-        + "FROM hdcovello.LuxuryPartOfModel luxury, hdcovello.Part part, hdcovello.DepartmentModel model "
-        + "WHERE luxury.partnum = part.partnum AND model.modelnum = " + modelNum
+        + "FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part USING (partnum) "
+        + "WHERE modelnum = " + modelNum + ") "
 			  + "UNION "
 			  + "(SELECT partnum,1 as \"qty\",price FROM hdcovello.Part WHERE isrequired=1)";
 	  answer = statement_.executeQuery(queryStatement);
