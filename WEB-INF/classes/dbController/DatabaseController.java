@@ -165,6 +165,25 @@ public class DatabaseController {
     }
   }
 
+  /*---------------------------------------------------------------------
+   |  Method insertModel
+   |
+   |  Purpose:  Create a new department and model
+   |
+   |  Pre-condition:  The database has been initalized and the connection is valid
+   |
+   |  Post-condition: A tuple has been added to DepartmentModel, and 3-10 tuples have been
+   |                  added to LuxuryPartOfModel
+   |
+   |  Parameters:
+   |      int modelNum -- The model number of the model to add
+   |      String deptName -- The name of the DepartmentModel
+   |      String modelName -- The name of the model
+   |      float cost -- The cost of this modelNme
+   |      int[] luxuryParts -- The luxury parts that go with this model
+   |
+   |  Returns:  None
+   *-------------------------------------------------------------------*/
   public void insertModel(int modelNum, String deptName, String modelName,
         float cost, int[] luxuryParts) throws SQLException{
     // Add a new model
@@ -181,6 +200,23 @@ public class DatabaseController {
     Commit();
   }
 
+  /*---------------------------------------------------------------------
+   |  Method insertShip
+   |
+   |  Purpose:  Create/order a new ship
+   |
+   |  Pre-condition:  The database has been initalized and the connection is valid
+   |
+   |  Post-condition: A tuple has been added to ShipContract, and several tuples have been
+   |                  added to PartToComplete
+   |
+   |  Parameters:
+   |      int shipNum -- The ship number of the ship to add
+   |      int modelNum -- The model number
+   |      int custNum -- The customer number
+   |
+   |  Returns:  None
+   *-------------------------------------------------------------------*/
   public void insertShip(int shipNum, int modelNum, int custNum) throws SQLException{
     // Get the cost associated with the given modelnum
     String queryStatement = "SELECT modelCost FROM hdcovello.DepartmentModel "
@@ -194,16 +230,7 @@ public class DatabaseController {
         + "VALUES (" + shipNum + "," + modelNum + "," + custNum + "," + cost + ")";
     statement_.executeUpdate(updateStatement);
 
-    // Now insert the parts for that ship into PartToComplete
-    /*
-    updateStatement = "INSERT INTO hdcovello.PartToComplete (shipnum,partnum,qtyleft,contractedprice) "
-          + "((SELECT " + shipNum + ",partnum,qty,price "
-          + "FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part USING (partnum)) "
-      	  + "UNION "
-      		+ "(SELECT " + shipNum + ",partnum,1,price FROM hdcovello.Part WHERE isrequired=1))";
-    statement_.executeUpdate(updateStatement);
-    */
-
+    // Insert the parts associated with this ship
     queryStatement = "(SELECT partnum,qty,price "
         + "FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part USING (partnum) "
         + "WHERE modelnum = " + modelNum + ") "
@@ -233,6 +260,21 @@ public class DatabaseController {
 	  Commit();
   }
 
+  /*---------------------------------------------------------------------
+   |  Method deleteShip
+   |
+   |  Purpose:  Delete a ship
+   |
+   |  Pre-condition:  The database has been initalized and the connection is valid
+   |
+   |  Post-condition: A tuple has been removed from ShipContract, and 0-many tuples have been
+   |                  removed from PartToComplete
+   |
+   |  Parameters:
+   |      int shipNum -- The ship number of the ship to delete
+   |
+   |  Returns:  None
+   *-------------------------------------------------------------------*/
   public void deleteShip(int shipNum) throws SQLException{
     String updateStatement = "DELETE FROM hdcovello.PartToComplete "
     		  + "WHERE shipnum=" + shipNum;
@@ -243,6 +285,22 @@ public class DatabaseController {
     Commit();
   }
 
+  /*---------------------------------------------------------------------
+   |  Method updateShip
+   |
+   |  Purpose:  Update a ship, thus adding the given part to the given ship
+   |
+   |  Pre-condition:  The database has been initalized and the connection is valid
+   |
+   |  Post-condition: PartToComplete qty in 1 PartToComplete tuple is -=1, and is
+   |                  removed if that qty reaches 0
+   |
+   |  Parameters:
+   |      int shipNum -- The ship number associated with the part do decrement
+   |      int partNum -- The part number of the part do decrement
+   |
+   |  Returns:  None
+   *-------------------------------------------------------------------*/
   public void updateShip(int shipNum, int partNum) throws SQLException{
 
     // Decrement the quantity of the given part for that ship remaining
@@ -260,6 +318,23 @@ public class DatabaseController {
 
   }
 
+  /*---------------------------------------------------------------------
+   |  Method insertPart
+   |
+   |  Purpose:  Insert a part into the catalogue of parts
+   |
+   |  Pre-condition:  The database has been initalized and the connection is valid
+   |
+   |  Post-condition: A tuple has been added to relation Part
+   |
+   |  Parameters:
+   |      int partNum -- The part number of the part to create
+   |      String partName -- The name of the part to create
+   |      int price -- The price of the part to create
+   |      int isRequired -- 1 if this part is required for all ships, 0 otherwise
+   |
+   |  Returns:  None
+   *-------------------------------------------------------------------*/
   public void insertPart(int partNum, String partName, int price, int isRequired) throws SQLException{
     String updateStatement = "INSERT INTO hdcovello.Part (partnum,partname,price,isrequired) "
     		  + "VALUES (" + partNum + ",'" + partName + "'," + price + "," + isRequired + ")";
@@ -267,6 +342,21 @@ public class DatabaseController {
     Commit();
   }
 
+  /*---------------------------------------------------------------------
+   |  Method updatePart
+   |
+   |  Purpose:  Change the price of the given part to the new price
+   |
+   |  Pre-condition:  The database has been initalized and the connection is valid
+   |
+   |  Post-condition: The price field in a tuple in Part has been changed
+   |
+   |  Parameters:
+   |      int partNum -- The part number of the part to change
+   |      int newPrice -- The new price of the given part
+   |
+   |  Returns:  None
+   *-------------------------------------------------------------------*/
   public void updatePart(int partNum, int newPrice) throws SQLException{
     String updateStatement = "UPDATE hdcovello.Part "
     		  + "SET price = " + newPrice
@@ -275,12 +365,31 @@ public class DatabaseController {
     Commit();
   }
 
+  /*---------------------------------------------------------------------
+   |  Method insertCustomer
+   |
+   |  Purpose:  Create a new customer
+   |
+   |  Pre-condition:  The database has been initalized and the connection is valid
+   |
+   |  Post-condition: A tuple has been added to relation Customer
+   |
+   |  Parameters:
+   |      String username -- The username of the customer being created
+   |      String firstName -- The first name of the customer being created
+   |      String lastName -- The last name of the customer being created
+   |
+   |  Returns:  None
+   *-------------------------------------------------------------------*/
   public void insertCustomer(String username, String firstName, String lastName) throws SQLException{
     // Get the customer number to used
     String queryStatement = "SELECT Max(custnum) FROM hdcovello.Customer";
     ResultSet answer = statement_.executeQuery(queryStatement);
-    answer.next();
-    int custNum = answer.getInt(1);
+    int custNum;
+    if(answer.next())
+      custNum = answer.getInt(1) + 1;
+    else
+      custNum = 1;
     // Insert a customer
     String updateStatement = "INSERT INTO hdcovello.Customer (custnum,username,firstname,lastname) "
         + "VALUES (" + custNum + "'" + username + "','" + firstName + "','" + lastName + "')";
@@ -288,6 +397,19 @@ public class DatabaseController {
     Commit();
   }
 
+  /*---------------------------------------------------------------------
+   |  Method getModels
+   |
+   |  Purpose:  Get the whole list of models in the database
+   |
+   |  Pre-condition:  The database has been initalized and the connection is valid
+   |
+   |  Post-condition: None
+   |
+   |  Parameters: None
+   |
+   |  Returns:  A list of the modelNums and modelNames of each model in the db
+   *-------------------------------------------------------------------*/
   public List<Pair<Integer, String>> getModels() throws SQLException{
     String queryStatement = "SELECT modelnum, modelname "
     	  + "FROM hdcovello.DepartmentModel";
@@ -301,6 +423,19 @@ public class DatabaseController {
     return result;
   }
 
+  /*---------------------------------------------------------------------
+   |  Method getParts
+   |
+   |  Purpose:  Get the whole list of parts in the database
+   |
+   |  Pre-condition:  The database has been initalized and the connection is valid
+   |
+   |  Post-condition: None
+   |
+   |  Parameters: None
+   |
+   |  Returns:  A list of the partNums and partNames of each part in the db
+   *-------------------------------------------------------------------*/
   public List<Pair<Integer, String>> getParts() throws SQLException{
     String queryStatement = "SELECT partnum, partname "
         + "FROM hdcovello.Part";
@@ -314,6 +449,19 @@ public class DatabaseController {
     return result;
   }
 
+  /*---------------------------------------------------------------------
+   |  Method getCustomers
+   |
+   |  Purpose:  Get the whole list of customers in the database
+   |
+   |  Pre-condition:  The database has been initalized and the connection is valid
+   |
+   |  Post-condition: None
+   |
+   |  Parameters: None
+   |
+   |  Returns:  A list of the custNums and usernames of each part in the db
+   *-------------------------------------------------------------------*/
   public List<Pair<Integer, String>> getCustomers() throws SQLException{
     String queryStatement = "SELECT custnum, username "
         + "FROM hdcovello.Customer";
@@ -327,6 +475,19 @@ public class DatabaseController {
     return result;
   }
 
+  /*---------------------------------------------------------------------
+   |  Method getLuxuryParts
+   |
+   |  Purpose:  Get the whole list of luxuryParts in the database
+   |
+   |  Pre-condition:  The database has been initalized and the connection is valid
+   |
+   |  Post-condition: None
+   |
+   |  Parameters: None
+   |
+   |  Returns:  A list of the partNums and partNames of each luxury part in the db
+   *-------------------------------------------------------------------*/
   public List<Pair<Integer, String>> getLuxuryParts() throws SQLException{
     String queryStatement = "SELECT partnum, partname "
         + "FROM hdcovello.Part WHERE isrequired=0";
@@ -340,6 +501,19 @@ public class DatabaseController {
     return result;
   }
 
+  /*---------------------------------------------------------------------
+   |  Method getShips
+   |
+   |  Purpose:  Get the whole list of ships in the database
+   |
+   |  Pre-condition:  The database has been initalized and the connection is valid
+   |
+   |  Post-condition: None
+   |
+   |  Parameters: None
+   |
+   |  Returns:  A list of the shipNums of each ship in the db
+   *-------------------------------------------------------------------*/
   public List<Integer> getShips() throws SQLException{
     String queryStatement = "SELECT shipNum "
         + "FROM hdcovello.ShipContract";
@@ -352,6 +526,21 @@ public class DatabaseController {
     return result;
   }
 
+  /*---------------------------------------------------------------------
+   |  Method getRemainingShipParts
+   |
+   |  Purpose:  Get the whole list of parts that remain to be built for the given ship
+   |
+   |  Pre-condition:  The database has been initalized and the connection is valid
+   |
+   |  Post-condition: None
+   |
+   |  Parameters:
+   |        int shipNum -- The ship, for which the list of remaining parts will be returned
+   |
+   |  Returns:  A list of the partNums, partNames and qtyLefts of each part that has yet to be built
+   |            for this ship
+   *-------------------------------------------------------------------*/
   public List<Pair<Integer,Pair<String,Integer>>> getRemainingShipParts(int shipNum) throws SQLException{
       String queryStatement = "SELECT partnum,partname,qtyleft "
           + "FROM hdcovello.PartToComplete JOIN hdcovello.Part using (partnum) "
@@ -368,6 +557,21 @@ public class DatabaseController {
       return result;
   }
 
+  /*---------------------------------------------------------------------
+   |  Method query1
+   |
+   |  Purpose:  Satisfy query1, which is "Choosing one from a list of ship types,
+   |            report the cost of all the parts"
+   |
+   |  Pre-condition:  The database has been initalized and the connection is valid
+   |
+   |  Post-condition: None
+   |
+   |  Parameters:
+   |      int modelNum -- The modelNum of the model for which to report the cost
+   |
+   |  Returns:  The cost of all the parts of this model
+   *-------------------------------------------------------------------*/
   public int query1(int modelNum) throws SQLException{
 	  String query = "SELECT SUM(price * qty) "  +
 			    "FROM hdcovello.LuxuryPartOfModel JOIN hdcovello.Part using (partNum) " +
@@ -384,6 +588,20 @@ public class DatabaseController {
     return result1 + result2;
   }
 
+  /*---------------------------------------------------------------------
+   |  Method query2
+   |
+   |  Purpose:  Satisfy query2, which is "List all ships that are partially
+   |            built but incomplete"
+   |
+   |  Pre-condition:  The database has been initalized and the connection is valid
+   |
+   |  Post-condition: None
+   |
+   |  Parameters: None
+   |
+   |  Returns:  The shipNums of the shps that are partially build but incomplete
+   *-------------------------------------------------------------------*/
   public List<Integer> query2() throws SQLException{
 	  String query = "SELECT DISTINCT shipNum FROM hdcovello.ShipContract " +
 			  "JOIN hdcovello.PartToComplete p USING (shipNum) WHERE EXISTS " +
@@ -402,6 +620,20 @@ public class DatabaseController {
     return result;
   }
 
+  /*---------------------------------------------------------------------
+   |  Method query3
+   |
+   |  Purpose:  Satisfy query3, which is "Find the customer that has paid the most
+   |            for ships from I4 , and how much they have spent"
+   |
+   |  Pre-condition:  The database has been initalized and the connection is valid
+   |
+   |  Post-condition: None
+   |
+   |  Parameters: None
+   |
+   |  Returns:  The customer that has paid the most to I4, and how much they have spent
+   *-------------------------------------------------------------------*/
   public Pair<Integer, Integer> query3() throws SQLException{
 	  String query = "select custNum, totalSpent from ( " +
 				"select custNum, sum(afterMarkupCost) as totalSpent from hdcovello.Customer " +
@@ -417,6 +649,22 @@ public class DatabaseController {
 	  return result;
   }
 
+  /*---------------------------------------------------------------------
+   |  Method query4
+   |
+   |  Purpose:  Satisfy query4, which is "Using the given customer name and status,
+   |            show the customer all of their ships with that status"
+   |
+   |  Pre-condition:  The database has been initalized and the connection is valid
+   |
+   |  Post-condition: None
+   |
+   |  Parameters:
+   |        String username - The username of the customer whose ships to display
+   |        String status - The status of the ships to display
+   |
+   |  Returns:  The list of ships credited to the given customer and with the given status
+   *-------------------------------------------------------------------*/
   public List<Integer> query4(String username, String status) throws SQLException{
     String query;
     if(status.equals("all")){
@@ -475,6 +723,21 @@ public class DatabaseController {
     return result;
   }
 
+  /*---------------------------------------------------------------------
+   |  Method query5
+   |
+   |  Purpose:  Satisfy query5, which is "What are the top three most popular ship
+   |            models sold, how many have sold to date, and what have the min,
+   |            average, and max prices been for each?"
+   |
+   |  Pre-condition:  The database has been initalized and the connection is valid
+   |
+   |  Post-condition: None
+   |
+   |  Parameters: None
+   |
+   |  Returns:  Data about the top three most popular ship models sold
+   *-------------------------------------------------------------------*/
   public Query5ReturnResult query5() throws SQLException{
     String query = "SELECT sub.modelNum, sub.modelName, totalSold, MIN(afterMarkupCost) as \"min\", "
         + "AVG(afterMarkupCost) as \"avg\", MAX(afterMarkupCost) as \"max\" "
