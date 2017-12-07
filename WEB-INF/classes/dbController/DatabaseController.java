@@ -17,13 +17,32 @@
  ||
  |+-----------------------------------------------------------------------
  ||
- ||   Constructors:  pubic DatabaseController(): No arguments
+ ||   Constructors:  public DatabaseController(): No arguments
  ||
- ||  Class Methods:  [List the names, arguments, and return types of all
- ||                   public class methods.]
+ ||  Class Methods:  None
  ||
- ||  Inst. Methods:  TODO[List the names, arguments, and return types of all
- ||                   public instance methods.]
+ ||  Inst. Methods:  public DatabaseController()
+ ||                  public String Open()
+ ||                  public void Close()
+ ||                  public void Commit()
+ ||                  public void insertModel(int modelNum, String deptName, String modelName, float cost, int[] luxuryParts)
+ ||                  public void insertShip(int shipNum, int modelNum, int custNum)
+ ||                  public void deleteShip(int shipNum)
+ ||                  public void updateShip(int shipNum, int partNum)
+ ||                  public void insertPart(int partNum, String partName, int price, int isRequired)
+ ||                  public void updatePart(int partNum, int newPrice)
+ ||                  public void insertCustomer(String username, String firstName, String lastName)
+ ||                  public List<Pair<Integer, String>> getModels()
+ ||                  public List<Pair<Integer, String>> getParts()
+ ||                  public List<Pair<Integer, String>> getCustomers()
+ ||                  public List<Pair<Integer, String>> getLuxuryParts()
+ ||                  public List<Integer> getShips()
+ ||                  public List<Pair<Integer,Pair<String,Integer>>> getRemainingShipParts(int shipNum)
+ ||                  public int query1(int modelNum)
+ ||                  public List<Integer> query2()
+ ||                  public Pair<Integer, Integer> query3()
+ ||                  public List<Integer> query4(String username, String status)
+ ||                  public List<Query5ReturnResult> query5()
  ||
  ++-----------------------------------------------------------------------*/
 
@@ -738,7 +757,7 @@ public class DatabaseController {
    |
    |  Returns:  Data about the top three most popular ship models sold
    *-------------------------------------------------------------------*/
-  public Query5ReturnResult query5() throws SQLException{
+  public List<Query5ReturnResult> query5() throws SQLException{
     String query = "SELECT sub.modelNum, sub.modelName, totalSold, MIN(afterMarkupCost) as \"min\", "
         + "AVG(afterMarkupCost) as \"avg\", MAX(afterMarkupCost) as \"max\" "
         + "FROM (SELECT modelNum, modelName, COUNT(shipNum) AS totalSold "
@@ -746,23 +765,51 @@ public class DatabaseController {
         + "JOIN hdcovello.DepartmentModel using (modelNum) "
         + "WHERE rownum <= 3 "
         + "GROUP BY modelNum, modelName "
-        + "ORDER BY totalSold DESC) sub"
+        + "ORDER BY totalSold DESC) sub "
         + "JOIN hdcovello.ShipContract sc on (sc.modelNum = sub.modelNum) "
         + "GROUP BY sub.totalSold, sub.modelNum, sub.modelName";
 
     ResultSet answer = statement_.executeQuery(query);
-    //while(answer.next()){
+    List<Query5ReturnResult> result = new ArrayList<Query5ReturnResult>();
+    while(answer.next()){
       int modelNum = answer.getInt("modelNum");
       String modelName = answer.getString("modelName");
       int totalSold = answer.getInt("totalSold");
       float lowestPrice = answer.getFloat("min");
       float averagePrice = answer.getFloat("avg");
       float highestPrice = answer.getFloat("max");
-    //}
-    return new Query5ReturnResult(modelNum, modelName, totalSold, lowestPrice,
-            averagePrice, highestPrice);
+      result.add(new Query5ReturnResult(modelNum, modelName, totalSold, lowestPrice,
+            averagePrice, highestPrice));
+    }
+    return result;
   }
 
+  /*+----------------------------------------------------------------------
+   ||
+   ||  Class Query5ReturnResult
+   ||
+   ||         Author:  Caleb Short
+   ||
+   ||        Purpose:  This is an object containing multiple fields needed to be returned by query5
+   ||
+   ||  Inherits From:  None
+   ||
+   ||     Interfaces:  None
+   ||
+   |+-----------------------------------------------------------------------
+   ||
+   ||      Constants:  None
+   ||
+   |+-----------------------------------------------------------------------
+   ||
+   ||   Constructors:  public Query5ReturnResult(int modelNum, String modelNme, int totalSold,
+             float lowestPrice, float averagePrice, float highestPrice)
+   ||
+   ||  Class Methods:  None
+   ||
+   ||  Inst. Methods:  None
+   ||
+   ++-----------------------------------------------------------------------*/
   public class Query5ReturnResult{
     public int modelNum;
     public String modelName;
